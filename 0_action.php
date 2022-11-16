@@ -29,35 +29,35 @@ if(!file_exists($working_directory.$branch) ){
 	}
 }
 
+//  Git update.
+if(!include('2_update.php') ){
+	exit(__LINE__);
+}
+
 //  Change directory.
 if(!chdir($working_directory.$branch) ){
 	exit(__LINE__);
 }
 
-//  Checking commit id file exists.
-if(!file_exists($commit_id_file) ){
+//  Get commit id. <-- app-skeleton only
+$commit_id = `git show --format='%h' --no-patch`;
+
+//	Check commit id file exists.
+if( file_exists($commit_id_file) ){
+	//  Checking last commit id.
+	if( $commit_id === file_get_contents($commit_id_file) ){
+		//  Not fixed.
+		exit(0);
+	}
+}else{
 	//  Create commit id file.
 	if(!touch($commit_id_file) ){
 		exit(__LINE__);
 	}
 }
 
-//  Git update.
-if(!include('2_update.php') ){
-	exit(__LINE__);
-}
-
-//  Get commit id.
-$commit_id = `git show --format='%h' --no-patch`;
-
-//  Checking last commit id.
-if( $commit_id === file_get_contents($commit_id_file) ){
-	//  Not fixed.
-	exit(0);
-}
-
 //  Execute ci.php
-$result = `php ci.php`;
+$result = `php ci.php display=0`;
 if( strpos($result, "0\n") === 0 ){
 	ExecuteCode( explode("\n", $result) );
 }else{
