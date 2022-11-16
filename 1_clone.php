@@ -8,9 +8,10 @@
  * @copyright Tomoaki Nagahara All right reserved.
  */
 
-//	
+//	Check working directory exists.
 if(!file_exists($working_directory) ){
 	//	Create working directory.
+	echo "\n Create working directory - {$working_directory} \n";
 	if(!mkdir($working_directory, recursive: true) ){
 		return false;
 	}
@@ -21,19 +22,47 @@ if(!chdir($working_directory) ){
 	exit(__LINE__);
 }
 
-//	Checking repository exists.
+//	Check repository exists.
 if(!file_exists($branch) ){
 	//  Clone repository.
+	echo "\n Clone git repository - {$repository_path} \n\n";
 	`git clone {$repository_path}`;
 }
 
-//	Checking git clone success.
+//	Check git clone success.
 if(!file_exists($branch . '/.git') ){
 	return false;
 }
 
+//	Change directory to git repository.
+echo "\n Change directory - {$working_directory}{$branch} \n";
+if(!chdir($working_directory.$branch) ){
+	echo "Change directory failed - {$working_directory}{$branch} \n";
+	return false;
+}
+
 //	Added upstream repository.
-`git remote add upstream https://github.com/TomoakiNagahara/op-app-skeleton-2022-nep.git`;
+$upstream = 'https://github.com/TomoakiNagahara/op-app-skeleton-'.$branch.'-nep.git';
+echo "\n Add upstream URL - {$upstream} \n";
+`git remote add upstream {$upstream}`;
+
+//	Change .gitmodules.
+echo "\n Overwrite .gitmodules \n";
+`sh ./asset/git/submodule/local.sh`;
+`git add .gitmodules`;
+`git status`;
+`git commit -m "Fix: .gitmodules | Change repository remote path."`;
+
+//	Checkout submodules.
+echo "\n git checkout submodules \n";
+`git submodule update --init --recursive`;
+`git submodule foreach git checkout {$branch}`;
+
+/*
+//	Init git submodule.
+echo "\n Init git submodule. \n";
+`sh ./asset/git/submodule/init.sh`;
+*/
 
 //	Successful.
 return true;
