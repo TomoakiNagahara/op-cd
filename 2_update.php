@@ -8,6 +8,12 @@
  * @copyright Tomoaki Nagahara All right reserved.
  */
 
+ //	Change directory.
+if(!chdir($working_directory.$branch) ){
+	echo "Change directory failed - {$working_directory}{$branch} \n";
+	return false;
+}
+
 //  Rebase
 `git fetch`;
 `git rebase origin/master`;
