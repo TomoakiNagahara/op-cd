@@ -41,20 +41,17 @@ if(!chdir($working_directory.$branch) ){
 	return false;
 }
 
-//	Added upstream repository.
-$upstream = 'https://github.com/TomoakiNagahara/op-app-skeleton-'.$branch.'-nep.git';
-echo "\n Add upstream URL - {$upstream} \n";
-`git remote add upstream {$upstream}`;
-
 //	Change .gitmodules.
 echo "\n Overwrite .gitmodules \n";
 `sh ./asset/git/submodule/local.sh`;
+/*
 `git add .gitmodules`;
 `git status`;
 `git commit -m "Fix: .gitmodules | Change repository remote path."`;
+*/
 
 //	Checkout submodules.
-echo "\n git checkout submodules \n";
+echo "\n git checkout submodules \n\n";
 `git submodule update --init --recursive`;
 `git submodule foreach git checkout {$branch}`;
 
