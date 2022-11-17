@@ -9,7 +9,7 @@
  */
 
 //	Base URL.
-$base = 'https://github.com/TomoakiNagahara/';
+$base = 'https://github.com/'.$github_account.'/';
 
 //	Change app root directory.
 chdir($working_directory.$branch);
@@ -43,7 +43,7 @@ foreach(['develop', 'testcase', 'reference'] as $name){
 //	Layout, Unit, WebPack
 foreach(['layout', 'unit', 'webpack'] as $dir){	
 	//	Reset directory.
-	if(!chdir($path = $working_directory.$branch.'/asset/'.$dir) ){
+	if( file_exists($path = $working_directory.$branch.'/asset/'.$dir) and !chdir($path) ){
 		echo "Failed change directory. ({$path})\n";
 		continue;
 	}
@@ -58,7 +58,6 @@ foreach(['layout', 'unit', 'webpack'] as $dir){
 		$upstream = $base."op-{$dir}-{$name}.git";
 		echo "\n Add upstream URL - {$upstream} \n";
 		`git remote add upstream {$upstream}`;
-		var_dump($name, getcwd(), $upstream);
 	}
 } 
 
