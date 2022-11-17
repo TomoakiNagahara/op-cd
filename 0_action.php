@@ -10,16 +10,25 @@
 
 //  Init
 $branch            = $_SERVER['argv'][1] ?? null;
+$github_account    = $_SERVER['argv'][2] ?? null;
 $working_directory = '/www/workspace/';
 $repository_path   = "~/repo/op/skeleton/{$branch}.git";
 $commit_id_file    = '_commit_id';
+$base_file_name    = basename($_SERVER['argv'][0]);
 
 //	Empty branch name.
 if(!$branch ){
-	$cmd = 'php ' . basename($_SERVER['argv'][0]) . ' 2022';
+	$cmd = 'php '.$base_file_name.' 2022';
 	echo "Empty branch name. Example: {$cmd}".PHP_EOL;
 	exit(__LINE__);
-}
+}//	Empty branch name.
+
+//	Empty github account.
+if(!$github_account ){
+	$cmd = 'php '.$base_file_name.' 2022 your_github_account';
+	echo "Empty branch name. Example: {$cmd}".PHP_EOL;
+	exit(__LINE__);
+}//	Empty github account.
 
 //  Checking directory exists.
 if(!$cloned = file_exists($working_directory.$branch) ){
