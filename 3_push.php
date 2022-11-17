@@ -8,5 +8,12 @@
  * @copyright Tomoaki Nagahara All right reserved.
  */
 
+//	To clarify current directory.
+chdir($working_directory.$branch);
+
+//	Do the push.
 `git push upstream master`;
 `git submodule foreach git push upstream {$branch}`;
+
+//	Successful.
+return true;
