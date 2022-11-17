@@ -14,14 +14,23 @@ if(!chdir($working_directory.$branch) ){
 	return false;
 }
 
-//  Rebase
-`git fetch`;
+//  Rebase  origin.
+`git fetch  origin`;
 `git rebase origin/master`;
 
-//  Fetch submodules.
+//	Rebase  upstream.
+`git fetch  upstream`;
+`git rebase upstream/master`;
+
+//  Rebase submodules origin.
 `git submodule foreach git fetch    origin`;
 `git submodule foreach git checkout        2022`;
 `git submodule foreach git rebase   origin/2022`;
 
-//  Result.
+//  Rebase submodules upstream.
+`git submodule foreach git fetch    upstream`;
+`git submodule foreach git checkout          2022`;
+`git submodule foreach git rebase   upstream/2022`;
+
+//  Successful.
 return true;
