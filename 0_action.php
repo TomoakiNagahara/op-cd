@@ -22,16 +22,24 @@ if(!$branch ){
 }
 
 //  Checking directory exists.
-if(!file_exists($working_directory.$branch) ){
+if(!$cloned = file_exists($working_directory.$branch) ){
 	//	Execute clone.
 	if(!include('1_clone.php') ){
 		exit(__LINE__);
 	}
 }
 
-//  Git update.
-if(!include('2_update.php') ){
-	exit(__LINE__);
+//	If already cloned.
+if( $cloned ){
+	//  Git update.
+	if(!include('2_update.php') ){
+		exit(__LINE__);
+	}
+}else{
+	//	Add upstream repository.
+	if(!include('2_upstream.php') ){
+		return false;
+	}
 }
 
 //  Change directory.
@@ -57,17 +65,22 @@ if( file_exists($commit_id_file) ){
 }
 
 //  Execute ci.php
-$result = `php ci.php display=0`;
-if( strpos($result, "0\n") === 0 ){
-	ExecuteCode( explode("\n", $result) );
-}else{
-	echo $result;
+if( $result = `php ci.php display=1` ){
+	//	If result is error code.
+	if( strpos($result, "0\n") === 0 ){
+		ExecuteCode( explode("\n", $result) );
+	}else{
+		echo $result;
+	}
 }
 
 //	Save evaluated commit id.
 if(!file_put_contents($commit_id_file, $commit_id, LOCK_EX) ){
 	exit(__LINE__);
 }
+
+//	Push git repository to upstream.
+include('3_push.php');
 
 //	Finished
 exit(0);
