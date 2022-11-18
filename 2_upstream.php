@@ -42,8 +42,17 @@ foreach(['develop', 'testcase', 'reference'] as $name){
 
 //	Layout, Unit, WebPack
 foreach(['layout', 'unit', 'webpack'] as $dir){	
+	//	Generate path.
+	$path = $working_directory.$branch.'/asset/'.$dir;
+
+	//	Check directory exists.
+	if(!file_exists($path) ){
+		echo "Does not exists directory. ({$path})\n";
+		continue;
+	}
+
 	//	Reset directory.
-	if( file_exists($path = $working_directory.$branch.'/asset/'.$dir) and !chdir($path) ){
+	if( !chdir($path) ){
 		echo "Failed change directory. ({$path})\n";
 		continue;
 	}
