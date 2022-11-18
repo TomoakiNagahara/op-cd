@@ -14,6 +14,9 @@ chdir($working_directory.$branch);
 //	Do the push.
 `git push upstream master`;
 `git submodule foreach git push upstream {$branch}`;
+/*
+`git push --recurse-submodules=on-demand`
+*/
 
 //	Successful.
 return true;
