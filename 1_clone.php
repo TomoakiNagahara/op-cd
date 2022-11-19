@@ -26,7 +26,7 @@ if(!chdir($working_directory) ){
 if(!file_exists($branch) ){
 	//  Clone repository.
 	echo "\n Clone git repository - {$repository_path} \n\n";
-	`git clone {$repository_path}`;
+	`git clone -b master {$repository_path}`;
 }
 
 //	Check git clone success.
