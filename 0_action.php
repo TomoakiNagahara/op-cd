@@ -26,7 +26,7 @@ if(!$branch ){
 //	Empty github account.
 if(!$github_account ){
 	$cmd = 'php '.$base_file_name.' 2022 your_github_account';
-	echo "Empty branch name. Example: {$cmd}".PHP_EOL;
+	echo "Empty GitHub account name. Example: {$cmd}".PHP_EOL;
 	exit(__LINE__);
 }//	Empty github account.
 
