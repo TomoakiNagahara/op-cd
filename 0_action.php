@@ -31,7 +31,7 @@ if(!$github_account ){
 }//	Empty github account.
 
 //  Checking directory exists.
-if(!$cloned = file_exists($working_directory.$branch) ){
+if(!$exists = file_exists($working_directory.$branch) ){
 	//	Execute clone.
 	if(!include('1_clone.php') ){
 		exit(__LINE__);
@@ -39,7 +39,7 @@ if(!$cloned = file_exists($working_directory.$branch) ){
 }
 
 //	If already cloned.
-if( $cloned ){
+if( $exists ){
 	//  Git update.
 	if(!include('2_update.php') ){
 		exit(__LINE__);
