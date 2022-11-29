@@ -18,15 +18,15 @@ $base_file_name    = basename($_SERVER['argv'][0]);
 
 //	Empty branch name.
 if(!$branch ){
-	$cmd = 'php '.$base_file_name.' 2022';
-	echo "Empty branch name. Example: {$cmd}".PHP_EOL;
+	$cmd = "php {$base_file_name} [2022]";
+	echo "Empty branch name: {$cmd}".PHP_EOL;
 	exit(__LINE__);
 }//	Empty branch name.
 
 //	Empty github account.
 if(!$github_account ){
-	$cmd = 'php '.$base_file_name.' 2022 your_github_account';
-	echo "Empty GitHub account name. Example: {$cmd}".PHP_EOL;
+	$cmd = "php {$base_file_name} {$branch} [GITHUB PUSH ACCOUNT]";
+	echo "Empty GitHub account name: {$cmd}".PHP_EOL;
 	exit(__LINE__);
 }//	Empty github account.
 
