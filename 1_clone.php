@@ -41,25 +41,14 @@ if(!chdir($working_directory.$branch) ){
 	return false;
 }
 
-//	Change .gitmodules.
+//	Change .gitmodules. https://github.com/onepiece-framework/op-core.git --> ~/repo/op/core.git
 echo "\n Overwrite .gitmodules \n";
 `sh ./asset/git/submodule/local.sh`;
-/*
-`git add .gitmodules`;
-`git status`;
-`git commit -m "Fix: .gitmodules | Change repository remote path."`;
-*/
 
 //	Checkout submodules.
 echo "\n git checkout submodules \n\n";
 `git submodule update --init --recursive`;
 `git submodule foreach git checkout {$branch}`;
-
-/*
-//	Init git submodule.
-echo "\n Init git submodule. \n";
-`sh ./asset/git/submodule/init.sh`;
-*/
 
 //	Successful.
 return true;
