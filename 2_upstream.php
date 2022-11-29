@@ -63,16 +63,20 @@ foreach(['layout', 'unit', 'webpack'] as $dir){
 		if(!chdir($working_directory.$branch.'/asset/'.$dir.'/'.$name) ){
 			continue;
 		}
+
 		//	Add upstream repository.
 		$upstream = $base."op-{$dir}-{$name}.git";
-		echo "\n Add upstream URL - {$upstream} \n";
+		echo "\n";
+		echo " Add upstream: \n";
+		echo "  ".getcwd() ."\n";
+		echo "  ".$upstream."\n";
 		`git remote add upstream {$upstream}`;
 	}
-} 
+}
+echo "\n";
 
 //	Fetch upstream
 chdir($working_directory.$branch);
-var_dump(getcwd());
 `git fetch upstream`;
 `git submodule foreach git fetch upstream`;
 
