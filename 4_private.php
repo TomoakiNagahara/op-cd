@@ -55,7 +55,16 @@ if(!($pos = strpos($configs[$name]['url'], '/', $pos)) ){
 	return false;
 }
 
-//	Add upstream remote.
+//	Add upstream.
+$origin = `git config --get remote.origin.url`;
+$origin = trim($origin);
+$url    = 'repo:~'.substr($origin, $pos);
+$result = `git remote add upstream $url`;
+if( $result ){
+	echo $result;
+}
+
+//	Add submodule upstream.
 foreach( $configs as $config ){
 	//	Change to the submodule directory.
 	chdir($app_root . $config['path']);
