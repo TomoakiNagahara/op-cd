@@ -1,6 +1,8 @@
 <?php
 /** git upstream repository
- * 
+ *
+ * Add remote upstream repository.
+ *
  * @created   2022-11-13
  * @version   1.0
  * @package   op-ci
@@ -37,11 +39,11 @@ foreach(['develop', 'testcase', 'reference'] as $name){
 	$upstream = $base."op-module-{$name}.git";
 	echo "\n Add upstream URL - {$upstream} \n";
 	`git remote add upstream {$upstream}`;
-	
+
 }
 
 //	Layout, Unit, WebPack
-foreach(['layout', 'unit', 'webpack'] as $dir){	
+foreach(['layout', 'unit', 'webpack'] as $dir){
 	//	Generate path.
 	$path = $working_directory.$branch.'/asset/'.$dir;
 
