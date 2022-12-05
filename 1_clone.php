@@ -1,6 +1,9 @@
 <?php
 /** git clone repository
- * 
+ *
+ * Clone repository from local repository.
+ * And, Submodule too.
+ *
  * @created   2022-11-13
  * @version   1.0
  * @package   op-cd
@@ -8,18 +11,14 @@
  * @copyright Tomoaki Nagahara All right reserved.
  */
 
-//	Check working directory exists.
-if(!file_exists($working_directory) ){
-	//	Create working directory.
-	echo "\n Create working directory - {$working_directory} \n";
-	if(!mkdir($working_directory, recursive: true) ){
-		return false;
-	}
-}
+/* @var $working_directory string */
+/* @var $repository_path   string */
+/* @var $branch            string */
 
 //	Change directory.
 if(!chdir($working_directory) ){
-	exit(__LINE__);
+	echo "Change directory is failed. ($working_directory)\n";
+	return false;
 }
 
 //	Check repository exists.
