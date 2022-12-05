@@ -45,7 +45,7 @@ if( $exists ){
 }else{
 	//	Add upstream repository.
 	if(!include('2_upstream.php') ){
-		return false;
+		exit(__LINE__);
 	}
 }
 
