@@ -5,7 +5,7 @@
  *
  * @created   2022-11-13
  * @version   1.0
- * @package   op-ci
+ * @package   op-cd
  * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
  * @copyright Tomoaki Nagahara All right reserved.
  */
