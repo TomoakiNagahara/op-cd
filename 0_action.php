@@ -19,6 +19,7 @@
 $branch            = $_SERVER['argv'][1] ?? null;
 $github_account    = $_SERVER['argv'][2] ?? null;
 $working_directory = '/www/workspace/';
+$app_root          = $working_directory . $branch . '/';
 $repository_path   = "~/repo/op/skeleton/{$branch}.git";
 $commit_id_file    = '_commit_id';
 $base_file_name    = basename($_SERVER['argv'][0]);
@@ -38,7 +39,7 @@ if(!$github_account ){
 }//	Empty github account.
 
 //  Checking directory exists.
-if(!$exists = file_exists($working_directory.$branch) ){
+if(!$exists = file_exists($app_root) ){
 	//	Execute clone.
 	if(!include('1_clone.php') ){
 		exit(__LINE__);
@@ -59,7 +60,7 @@ if( $exists ){
 }
 
 //  Change directory.
-if(!chdir($working_directory.$branch) ){
+if(!chdir($app_root) ){
 	exit(__LINE__);
 }
 
