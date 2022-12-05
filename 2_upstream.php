@@ -10,11 +10,18 @@
  * @copyright Tomoaki Nagahara All right reserved.
  */
 
+/* @var  $github_account  string */
+/* @var  $app_root        string */
+/* @var  $branch          string */
+
+//	To clarify current directory.
+if(!chdir($app_root) ){
+	echo "Change directory is failed. ($app_root)\n";
+	return false;
+}
+
 //	Base URL.
 $base = 'https://github.com/'.$github_account.'/';
-
-//	Change app root directory.
-chdir($working_directory.$branch);
 
 //	app skeleton
 $upstream = $base.'op-app-skeleton-'.$branch.'-nep.git';
@@ -45,7 +52,7 @@ foreach(['develop', 'testcase', 'reference'] as $name){
 //	Layout, Unit, WebPack
 foreach(['layout', 'unit', 'webpack'] as $dir){
 	//	Generate path.
-	$path = $working_directory.$branch.'/asset/'.$dir;
+	$path = $app_root.'/asset/'.$dir;
 
 	//	Check directory exists.
 	if(!file_exists($path) ){
@@ -62,7 +69,7 @@ foreach(['layout', 'unit', 'webpack'] as $dir){
 	//	Get targets.
 	foreach( glob("*", GLOB_ONLYDIR) as $name ){
 		//	Change target directory.
-		if(!chdir($working_directory.$branch.'/asset/'.$dir.'/'.$name) ){
+		if(!chdir($app_root.'/asset/'.$dir.'/'.$name) ){
 			continue;
 		}
 
@@ -78,7 +85,7 @@ foreach(['layout', 'unit', 'webpack'] as $dir){
 echo "\n";
 
 //	Fetch upstream
-chdir($working_directory.$branch);
+chdir($app_root);
 `git fetch upstream`;
 `git submodule foreach git fetch upstream`;
 
