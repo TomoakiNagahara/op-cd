@@ -24,19 +24,10 @@ $repository_path   = "~/repo/op/skeleton/{$branch}.git";
 $commit_id_file    = '_commit_id';
 $base_file_name    = basename($_SERVER['argv'][0]);
 
-//	Empty branch name.
-if(!$branch ){
-	$cmd = "php {$base_file_name} [2022]";
-	echo "Empty branch name: {$cmd}".PHP_EOL;
-	exit(__LINE__);
-}//	Empty branch name.
-
-//	Empty github account.
-if(!$github_account ){
-	$cmd = "php {$base_file_name} {$branch} [GITHUB PUSH ACCOUNT]";
-	echo "Empty GitHub account name: {$cmd}".PHP_EOL;
-	exit(__LINE__);
-}//	Empty github account.
+//	Check arguments error.
+if(!include('0_check.php') ){
+	exit(__LINE__); // git diff is fool.
+};
 
 //  Checking directory exists.
 if(!$exists = file_exists($app_root) ){
