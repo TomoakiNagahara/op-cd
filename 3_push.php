@@ -1,6 +1,6 @@
 <?php
 /** git push repository
- * 
+ *
  * @created   2022-11-15
  * @version   1.0
  * @package   op-cd
@@ -8,8 +8,14 @@
  * @copyright Tomoaki Nagahara All right reserved.
  */
 
+/* @var $app_root string */
+/* @var $branch   string */
+
 //	To clarify current directory.
-chdir($working_directory.$branch);
+if(!chdir($app_root) ){
+	echo "Change directory is failed. ($app_root)\n";
+	return false;
+}
 
 //	Do the push.
 `git push upstream master`;
