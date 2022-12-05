@@ -1,6 +1,6 @@
 <?php
 /** git update repository
- * 
+ *
  * @created   2022-11-13
  * @version   1.0
  * @package   op-cd
@@ -8,9 +8,11 @@
  * @copyright Tomoaki Nagahara All right reserved.
  */
 
- //	Change directory.
-if(!chdir($working_directory.$branch) ){
-	echo "Change directory failed - {$working_directory}{$branch} \n";
+/* @var $app_root string */
+
+//	To clarify current directory.
+if(!chdir($app_root) ){
+	echo "Change directory failed - {$app_root} \n";
 	return false;
 }
 
