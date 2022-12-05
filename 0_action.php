@@ -1,6 +1,13 @@
 <?php
 /** main action
- * 
+ *
+ * # RULES
+ *
+ * `exit()` is only this file.
+ * The reason is that you will not know where `exit()`.
+ * Included files always return a boolean value.
+ * Please output the error message by include files.
+ *
  * @created   2022-11-11
  * @version   1.0
  * @package   op-cd
