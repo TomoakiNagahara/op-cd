@@ -37,16 +37,16 @@ if(!$exists = file_exists($app_root) ){
 }
 
 //	If already cloned.
-if( $exists ){
-	//  Git update.
-	if(!include('2_update.php') ){
-		exit(__LINE__);
-	}
-}else{
+if(!$exists ){
 	//	Add upstream repository.
 	if(!include('2_upstream.php') ){
 		exit(__LINE__);
 	}
+}
+
+//	Git update.
+if(!include('3_update.php') ){
+	exit(__LINE__);
 }
 
 //	Execute CI.
