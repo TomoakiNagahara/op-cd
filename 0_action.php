@@ -29,15 +29,12 @@ if(!include('0_check.php') ){
 };
 
 //  Checking directory exists.
-if(!$exists = file_exists($app_root) ){
-	//	Execute clone.
+if(!file_exists($app_root) ){
+	//	Do clone.
 	if(!include('1_clone.php') ){
 		exit(__LINE__);
 	}
-}
 
-//	If already cloned.
-if(!$exists ){
 	//	Add upstream repository.
 	if(!include('2_upstream.php') ){
 		exit(__LINE__);
