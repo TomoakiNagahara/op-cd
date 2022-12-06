@@ -52,25 +52,9 @@ function ExecuteCI(string $php_version) : bool {
 		return false;
 	}
 
-	//	Saved commit id file name.
-	$commit_id_file = '.op-cd_commit-id.php'.$php_version;
-
-	//  Get commit id. <-- app-skeleton only
-	$commit_id = `git show --format='%h' --no-patch`;
-
-	//	Check commit id file exists.
-	if( file_exists($commit_id_file) ){
-		//  Checking last commit id.
-		if( $commit_id === file_get_contents($commit_id_file) ){
-			//  Not fixed.
-			return true;
-		}
-	}else{
-		//  Create commit id file.
-		if(!touch($commit_id_file) ){
-			echo "Failed touch({$commit_id_file}) command #".__LINE__;
-			return false;
-		}
+	//	If that commit has already been tested.
+	if( CheckCommitID($php_version) ){
+		return true;
 	}
 
 	//  Execute ci.php
@@ -84,8 +68,7 @@ function ExecuteCI(string $php_version) : bool {
 	}
 
 	//	Save evaluated commit id.
-	if(!file_put_contents($commit_id_file, $commit_id, LOCK_EX) ){
-		echo "Failed file_put_contents({$commit_id_file}) command #".__LINE__;
+	if(!SaveCommitID($php_version) ){
 		return false;
 	}
 
@@ -144,4 +127,75 @@ function GitBranch(string $branch) : bool {
 
 	//	...
 	return true;
+}
+
+/** Check if already tested by saved commit id.
+ *
+ * @created    2022-12-06
+ * @param      string      $php_version
+ * @return     boolean
+ */
+function CheckCommitID(string $php_version) : bool {
+	//	Get commit id file name.
+	$commit_id_file = GetCommitIdFileName($php_version);
+
+	//  Get commit id. <-- app-skeleton only
+	$commit_id = `git show --format='%h' --no-patch`;
+
+	//	Check if commit id file exists.
+	if(!file_exists($commit_id_file) ){
+		//  Create commit id file.
+		if(!touch($commit_id_file) ){
+			echo "Failed touch({$commit_id_file}) command #".__LINE__;
+		}
+		return false;
+	}
+
+	//  Checking last commit id.
+	if( $commit_id !== file_get_contents($commit_id_file) ){
+		//  Not tested.
+		return false;
+	}
+
+	//	...
+	if( /*$display or */ true ){
+		$branch = $php_version ? 'PHP'.$php_version: 'master';
+		echo "This branch is Already tested. ({$branch})\n\n";
+	}
+
+	//	...
+	return true;
+}
+
+/**
+ *
+ * @created    2022-12-06
+ * @param      string      $php_version
+ * @return     boolean
+ */
+function SaveCommitID(string $php_version) : bool {
+	//	...
+	$commit_id_file = GetCommitIdFileName($php_version);
+
+	//  Get commit id. <-- app-skeleton only
+	$commit_id = `git show --format='%h' --no-patch`;
+
+	//	...
+	if(!file_put_contents($commit_id_file, $commit_id, LOCK_EX) ){
+		echo "Failed file_put_contents({$commit_id_file}) command #".__LINE__;
+		return false;
+	}
+
+	//	...
+	return true;
+}
+
+/** Generate a file name of save the commit ID.
+ *
+ * @created    2022-12-06
+ * @param      string      $php_version
+ * @return     string
+ */
+function GetCommitIdFileName(string $php_version) : string {
+	return '.op-cd_commit-id.php'.$php_version;
 }
