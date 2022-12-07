@@ -79,8 +79,9 @@ function ExecuteCI(string $php_version) : bool {
 /** Execute code.
  *
  * @created    2022-11-11
+ * @param      array       $codes
  */
-function ExecuteCode($codes) : void {
+function ExecuteCode(array $codes) : void {
 	//	...
 	foreach( $codes as $code ){
 		//	...
@@ -97,6 +98,7 @@ function ExecuteCode($codes) : void {
  *
  * @created    2022-12-06
  * @param      string      $branch
+ * @return     boolean
  */
 function GitBranch(string $branch) : bool {
 	//	Switch branch.
@@ -158,7 +160,7 @@ function CheckCommitID(string $php_version) : bool {
 	}
 
 	//	...
-	if( /*$display or */ true ){
+	if( Request('display') ?? true ){
 		$branch = $php_version ? 'PHP'.$php_version: 'master';
 		echo "This branch is Already tested. ({$branch})\n\n";
 	}
