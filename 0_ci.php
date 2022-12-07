@@ -8,11 +8,12 @@
  * @copyright Tomoaki Nagahara All right reserved.
  */
 
-/* @var $app_root string */
+//	Return constant value.
+$_ = function($constant_name){ return $constant_name; };
 
 //	To clarify current directory.
-if(!chdir($app_root) ){
-	echo "Change directory is failed. ($app_root)\n";
+if(!chdir(_APP_ROOT_) ){
+	echo "Change directory is failed. ({$_(_APP_ROOT_)})\n";
 	return false;
 }
 
