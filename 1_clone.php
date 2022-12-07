@@ -11,9 +11,11 @@
  * @copyright Tomoaki Nagahara All right reserved.
  */
 
+//	...
+$branch = Request('branch');
+
 /* @var $working_directory string */
 /* @var $repository_path   string */
-/* @var $branch            string */
 
 //	Change directory.
 if(!chdir($working_directory) ){
