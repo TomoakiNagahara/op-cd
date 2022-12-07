@@ -8,30 +8,35 @@
  * @copyright Tomoaki Nagahara All right reserved.
  */
 
-/* @var $branch            string */
-/* @var $base_file_name    string */
-/* @var $github_account    string */
-/* @var $working_directory string */
+//	Return constant value.
+$_ = function($constant_name){ return $constant_name; };
+
+//	...
+$branch         = Request('branch');
+$github_account = Request('username');
+
+//	Generate help.
+if( empty($branch) or empty($github_account) ){
+	$cmd = "php {$_(_END_POINT_)} branch=2022 username=YOUR_GITHUB_USER_NAME";
+}
 
 //	Empty branch name.
 if(!$branch ){
-	$cmd = "php {$base_file_name} [2022]";
 	echo "Empty branch name: {$cmd}\n";
 	return false;
 }
 
 //	Empty github account.
 if(!$github_account ){
-	$cmd = "php {$base_file_name} {$branch} [GITHUB PUSH ACCOUNT]";
 	echo "Empty GitHub account name: {$cmd}\n";
 	return false;
 }
 
 //	Check working directory exists.
-if(!file_exists($working_directory) ){
+if(!file_exists(_WORKING_DIRECTORY_) ){
 	//	Create working directory.
-	if(!mkdir($working_directory, 0744, true) ){
-		echo "Create working directory is failed. ({$working_directory})\n";
+	if(!mkdir(_WORKING_DIRECTORY_, 0744, true) ){
+		echo "Create working directory is failed. ({$_(_WORKING_DIRECTORY_)})\n";
 		return false;
 	}
 }
