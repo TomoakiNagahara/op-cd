@@ -8,12 +8,11 @@
  * @copyright Tomoaki Nagahara All right reserved.
  */
 
-/* @var $app_root       string */
 //	...
 $github_account = Request('username');
 
 //	Change directory.
-if(!chdir($app_root) ){
+if(!chdir(_APP_ROOT_) ){
 	return false;
 }
 //	Skeleton.
@@ -22,7 +21,7 @@ if(!AddUpstream() ){
 }
 
 //	Submodule.
-if(!AddUpstreamSubmodule($app_root, $github_account) ){
+if(!AddUpstreamSubmodule(_APP_ROOT_, $github_account) ){
 	return false;
 }
 
