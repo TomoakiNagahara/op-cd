@@ -15,9 +15,15 @@
  * @copyright Tomoaki Nagahara All right reserved.
  */
 
+//	Include functions.
+require_once('9_request.php');
+
+//  Get arguments.
+$branch            = Request('branch')   ?? null;
+$github_account    = Request('username') ?? null;
+$display           = Request('display')  ?? true;
+
 //  Init
-$branch            = $_SERVER['argv'][1] ?? null;
-$github_account    = $_SERVER['argv'][2] ?? null;
 $working_directory = '/www/workspace/';
 $app_root          = $working_directory . $branch . '/';
 $repository_path   = "~/repo/op/skeleton/{$branch}.git";
