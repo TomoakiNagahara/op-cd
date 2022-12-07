@@ -9,7 +9,8 @@
  */
 
 /* @var $app_root       string */
-/* @var $github_account string */
+//	...
+$github_account = Request('username');
 
 //	Change directory.
 if(!chdir($app_root) ){
