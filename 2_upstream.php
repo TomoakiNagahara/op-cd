@@ -73,6 +73,9 @@ function AddUpstreamSubmodule(string $app_root, string $github_account){
 		//	...
 		`git remote add upstream {$config['url']}`;
 	}
+
+	//	...
+	return true;
 }
 
 /**
