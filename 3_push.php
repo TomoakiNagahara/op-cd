@@ -8,8 +8,10 @@
  * @copyright Tomoaki Nagahara All right reserved.
  */
 
+//	...
+$branch = Request('branch');
+
 /* @var $app_root string */
-/* @var $branch   string */
 
 //	To clarify current directory.
 if(!chdir($app_root) ){
