@@ -23,11 +23,17 @@ $branch            = Request('branch')   ?? null;
 $github_account    = Request('username') ?? null;
 $display           = Request('display')  ?? true;
 
-//  Init
-$working_directory = '/www/workspace/';
-$app_root          = $working_directory . $branch . '/';
-$repository_path   = "~/repo/op/skeleton/{$branch}.git";
-$base_file_name    = basename($_SERVER['argv'][0]);
+//	Set constant.
+define('_WORKING_DIRECTORY_', '/www/workspace/'                  );
+define('_APP_ROOT_'         , _WORKING_DIRECTORY_ .$branch . '/' );
+define('_REPOSITORY_PATH_'  , "~/repo/op/skeleton/{$branch}.git" );
+define('_END_POINT_'        , basename($_SERVER['argv'][0])      );
+
+//	Maintain compatibility.
+$working_directory = _WORKING_DIRECTORY_;
+$app_root          = _APP_ROOT_;
+$repository_path   = _REPOSITORY_PATH_;
+$base_file_name    = _END_POINT_;
 
 //	Check arguments error.
 if(!include('0_check.php') ){
@@ -35,7 +41,7 @@ if(!include('0_check.php') ){
 };
 
 //  Checking directory exists.
-if(!file_exists($app_root) ){
+if(!file_exists(_APP_ROOT_) ){
 	//	Do clone.
 	if(!include('1_clone.php') ){
 		exit(__LINE__);
@@ -61,6 +67,4 @@ if(!include('0_ci.php') ){
 exit(0);
 
 //	Eclipse Notice
-if( false ){
-	D($github_account, $app_root, $repository_path, $base_file_name);
-}
+D($github_account, $app_root, $repository_path, $base_file_name, $display, $working_directory);
