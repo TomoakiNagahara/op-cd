@@ -28,10 +28,12 @@ if(!AddUpstreamSubmodule(_APP_ROOT_, $github_account) ){
 //	Successful.
 return true;
 
-/**
+/** Add upstream to the Skeleton.
  *
+ * @created    2022-12-05
+ * @return     boolean
  */
-function AddUpstream(){
+function AddUpstream() : bool {
 	//	Get origin URL by skeleton.
 	if( $origin = `git config --get remote.origin.url` ){
 		$origin = trim($origin);
@@ -56,10 +58,14 @@ function AddUpstream(){
 	return true;
 }
 
-/**
+/** Add upstream to each the Submodules.
  *
+ * @created    2022-12-05
+ * @param      string      $app_root
+ * @param      string      $github_account
+ * @return     boolean
  */
-function AddUpstreamSubmodule(string $app_root, string $github_account){
+function AddUpstreamSubmodule(string $app_root, string $github_account) : bool {
 	//	Get submodule settings.
 	if(!$configs = GetConfigs($github_account) ){
 		return false;
@@ -78,8 +84,11 @@ function AddUpstreamSubmodule(string $app_root, string $github_account){
 	return true;
 }
 
-/**
+/** Get home position by URL.
  *
+ * @created    2022-12-05
+ * @param      string          $url
+ * @return     boolean|number
  */
 function GetHomePosition(string $url){
 	//	...
@@ -110,8 +119,11 @@ function GetHomePosition(string $url){
 	return $pos;
 }
 
-/**
+/** Get config by .gitmodules file.
  *
+ * @created    2022-12-05
+ * @param      string         $github_account
+ * @return     boolean|array
  */
 function GetConfigs(string $github_account){
 	//	Switch file name by GitHub account.
