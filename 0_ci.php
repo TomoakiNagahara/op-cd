@@ -22,7 +22,7 @@ foreach(['', 70 /*, 71, 72, 73, 74, 80, 81*/] as $php_version){ // Strict types 
 	//	...
 	if( ExecuteCI($php_version) ){
 		//	Push git repository to upstream.
-		include('3_push.php');
+		include('4_push.php');
 	};
 };
 
@@ -55,7 +55,7 @@ function ExecuteCI(string $php_version) : bool {
 
 	//	If that commit has already been tested.
 	if( CheckCommitID($php_version) ){
-		return true;
+		return false;
 	}
 
 	//  Execute ci.php
