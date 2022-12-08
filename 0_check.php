@@ -17,7 +17,7 @@ $github_account = Request('username');
 
 //	Generate help.
 if( empty($branch) or empty($github_account) ){
-	$cmd = "php {$_(_END_POINT_)} branch=2022 username=YOUR_GITHUB_USER_NAME";
+	$cmd = "php {$_(_END_POINT_)} branch=2022 username=YOUR_GITHUB_USER_NAME display=1 debug=0";
 }
 
 //	Empty branch name.
