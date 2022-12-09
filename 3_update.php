@@ -63,11 +63,11 @@ return true;
  */
 function GitSubmodule(string $result) : string {
 	//	...
-	$separated = explode("\n", $result);
-
-	//	...
 	$lines = [];
-	while( $line = array_shift($separated) ){
+	foreach( explode("\n", $result) as $line ){
+		//	...
+		$line = trim($line);
+
 		//	...
 		switch( $line ){
 			case '':
@@ -88,9 +88,10 @@ function GitSubmodule(string $result) : string {
  * @created    2022-12-08
  * @param      string      $result
  */
-function GitSaveResult(string $result) : void {
+function GitSaveResult(string $result) : string {
 	//	...
-	foreach(explode("\n", $result) as $line){
+	$lines = [];
+	foreach( explode("\n", $result) as $line ){
 		//	...
 		switch( trim($line) ){
 			case '':
@@ -100,8 +101,11 @@ function GitSaveResult(string $result) : void {
 		}
 
 		//	...
-		D($line);
+		$lines[] = $line;
 	}
+
+	//	...
+	return join("\n", $lines);
 }
 
 /** Git stash pop result.
@@ -109,13 +113,14 @@ function GitSaveResult(string $result) : void {
  * @created    2022-12-08
  * @param      string      $result
  */
-function GitPopResult(string $result) : void {
+function GitPopResult(string $result) : string {
 	//	...
 	if( strpos($result,'no changes added to commit (use "git add" and/or "git commit -a")') ){
-		return;
+		return '';
 	}
 
 	//	...
+	$lines = [];
 	foreach(explode("\n", $result) as $line){
 		//	...
 		switch( trim($line) ){
@@ -124,8 +129,11 @@ function GitPopResult(string $result) : void {
 		}
 
 		//	...
-		D($line);
+		$lines[] = $line;
 	}
+
+	//	...
+	return join("\n", $lines);
 }
 
 /** Git fetch result.
@@ -133,11 +141,12 @@ function GitPopResult(string $result) : void {
  * @created    2022-12-08
  * @param      string      $result
  */
-function GitFetchResult(string $result) : void {
+function GitFetchResult(string $result) : string {
 	//	...
 	$result = GitSubmodule($result);
 
 	//	...
+	$lines = [];
 	foreach(explode("\n", $result) as $line){
 		//	...
 		switch( trim($line) ){
@@ -146,8 +155,11 @@ function GitFetchResult(string $result) : void {
 		}
 
 		//	...
-		D($line);
+		$lines[] = $line;
 	}
+
+	//	...
+	return join("\n", $lines);
 }
 
 /** Git rebase result.
@@ -155,7 +167,7 @@ function GitFetchResult(string $result) : void {
  * @created    2022-12-08
  * @param      string      $result
  */
-function GitRebaseResult(string $result) : void {
+function GitRebaseResult(string $result) : string {
 	//	...
 	$result = GitSubmodule($result);
 
@@ -168,6 +180,7 @@ function GitRebaseResult(string $result) : void {
 	$specify_branch = Request('branch');
 
 	//	...
+	$lines = [];
 	foreach(explode("\n", $result) as $line){
 		//	...
 		switch( trim($line) ){
@@ -178,6 +191,9 @@ function GitRebaseResult(string $result) : void {
 		}
 
 		//	...
-		D($line);
+		$lines[] = $line;
 	}
+
+	//	...
+	return join("\n", $lines);
 }
