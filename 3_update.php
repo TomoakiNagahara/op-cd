@@ -23,31 +23,34 @@ if( $display ){ echo "\nStart repository update.\n"; }
 
 //	Start
 if( $display ){ echo "  Stash is save.\n"; }
-GitSaveResult(  `git stash  save             2>/dev/null` ?? '');
+$result  = GitSaveResult(  `git stash  save             2>/dev/null` ?? '');
 
 //  Rebase  origin.
 if( $display ){ echo "  Fetch origin repository and rebase.\n"; }
-GitFetchResult( `git fetch  origin           2>/dev/null` ?? '');
-GitRebaseResult(`git rebase origin/master    2>/dev/null` ?? '');
+$result .= GitFetchResult( `git fetch  origin           2>/dev/null` ?? '');
+$result .= GitRebaseResult(`git rebase origin/master    2>/dev/null` ?? '');
 
 //	Rebase  upstream.
 if( $display ){ echo "  Fetch upstream repository and rebase.\n"; }
-GitFetchResult( `git fetch  upstream         2>/dev/null` ?? '');
-GitRebaseResult(`git rebase upstream/master  2>/dev/null` ?? '');
+$result .= GitFetchResult( `git fetch  upstream         2>/dev/null` ?? '');
+$result .= GitRebaseResult(`git rebase upstream/master  2>/dev/null` ?? '');
 
 //  Rebase submodules origin.
 if( $display ){ echo "  Fetch submodule origin repository and rebase.\n"; }
-GitFetchResult( `git submodule foreach git fetch    origin      2>/dev/null` ?? '');
-GitRebaseResult(`git submodule foreach git rebase   origin/2022 2>/dev/null` ?? '');
+$result .= GitFetchResult( `git submodule foreach git fetch    origin      2>/dev/null` ?? '');
+$result .= GitRebaseResult(`git submodule foreach git rebase   origin/2022 2>/dev/null` ?? '');
 
 //  Rebase submodules upstream.
 if( $display ){ echo "  Fetch submodule upstream repository and rebase.\n"; }
-GitFetchResult( `git submodule foreach git fetch    upstream      2>/dev/null` ?? '');
-GitRebaseResult(`git submodule foreach git rebase   upstream/2022 2>/dev/null` ?? '');
+$result .= GitFetchResult( `git submodule foreach git fetch    upstream      2>/dev/null` ?? '');
+$result .= GitRebaseResult(`git submodule foreach git rebase   upstream/2022 2>/dev/null` ?? '');
 
 //	Finish
 if( $display ){ echo "  Stash is pop.\n"; }
-GitPopResult(   `git stash  pop              2>/dev/null` ?? '');
+$result .= GitPopResult(   `git stash  pop              2>/dev/null` ?? '');
+
+//	...
+echo $result;
 
 //  Successful.
 return true;
