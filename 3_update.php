@@ -21,36 +21,15 @@ if(!chdir(_APP_ROOT_) ){
 $display = Request('display') ?? true;
 if( $display ){ echo "\nStart repository update.\n"; }
 
-//	Start
-if( $display ){ echo "  Stash is save.\n"; }
-$result  = GitSaveResult(  `git stash  save             2>/dev/null` ?? '');
-
-//	Rebase  upstream - Upstream first.
-if( $display ){ echo "  Fetch upstream repository and rebase.\n"; }
-$result .= GitFetchResult( `git fetch  upstream         2>/dev/null` ?? '');
-$result .= GitRebaseResult(`git rebase upstream/master  2>/dev/null` ?? '');
-
-//  Rebase  origin.
-if( $display ){ echo "  Fetch origin repository and rebase.\n"; }
-$result .= GitFetchResult( `git fetch  origin           2>/dev/null` ?? '');
-$result .= GitRebaseResult(`git rebase origin/master    2>/dev/null` ?? '');
-
-//  Rebase submodules upstream - Upstream first.
-if( $display ){ echo "  Fetch submodule upstream repository and rebase.\n"; }
-$result .= GitFetchResult( `git submodule foreach git fetch    upstream      2>/dev/null` ?? '');
-$result .= GitRebaseResult(`git submodule foreach git rebase   upstream/2022 2>/dev/null` ?? '');
-
-//  Rebase submodules origin.
-if( $display ){ echo "  Fetch submodule origin repository and rebase.\n"; }
-$result .= GitFetchResult( `git submodule foreach git fetch    origin      2>/dev/null` ?? '');
-$result .= GitRebaseResult(`git submodule foreach git rebase   origin/2022 2>/dev/null` ?? '');
-
-//	Finish
-if( $display ){ echo "  Stash is pop.\n"; }
-$result .= GitPopResult(   `git stash  pop              2>/dev/null` ?? '');
-
 //	...
-echo $result;
+Git('stash save');
+Git('fetch',  'origin'  );
+Git('fetch',  'upstream');
+Git('rebase', 'upstream/master');
+Git('rebase', 'origin/master'  );
+Git('rebase', 'upstream/2022'  );
+Git('rebase', 'origin/2022'    );
+Git('stash pop');
 
 //  Successful.
 return true;
