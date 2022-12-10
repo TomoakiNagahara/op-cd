@@ -17,6 +17,7 @@
 
 //	Include functions.
 require_once('9_d.php');
+require_once('9_git.php');
 require_once('9_request.php');
 
 //  Get arguments.
