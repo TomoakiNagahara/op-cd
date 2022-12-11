@@ -36,6 +36,12 @@ return true;
  * @return     boolean
  */
 function ExecuteCI(string $php_version) : bool {
+	//	Check if php installed.
+	if(!`command -v php{$php_version}` ){
+		echo "This version of PHP is not installed. ($php_version)\n";
+		return false;
+	}
+
 	//	If php version is specified.
 	$branch = ($php_version === '') ? 'master': 'php'.$php_version;
 
@@ -59,7 +65,7 @@ function ExecuteCI(string $php_version) : bool {
 	}
 
 	//  Execute ci.php
-	if( $result = `php ci.php display=1` ){
+	if( $result = `php{$php_version} ci.php display=1` ){
 		//	If result is error code.
 		if( strpos($result, "0\n") === 0 ){
 			ExecuteCode( explode("\n", $result) );
