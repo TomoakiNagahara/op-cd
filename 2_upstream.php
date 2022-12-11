@@ -83,38 +83,3 @@ function AddUpstreamSubmodule(string $app_root, string $github_account) : bool {
 	//	...
 	return true;
 }
-
-/** Get home position by URL.
- *
- * @created    2022-12-05
- * @param      string          $url
- * @return     boolean|number
- */
-function GetHomePosition(string $url){
-	//	...
-	static $pos;
-
-	//	...
-	if( $pos ){
-		return $pos;
-	}
-
-	//	Detect home position.
-	if( 0 === strpos($url, '/home/') ){
-		$pos = 6;
-	}else if( 0 === strpos($url, '/Users/') ){
-		$pos = 7;
-	}else{
-		echo "Home position could not be detected. {$url}\n";
-		return false;
-	}
-
-	//	Detect user name position.
-	if(!($pos = strpos($url, '/', $pos)) ){
-		echo "User name position could not be detected. {$url}\n";
-		return false;
-	}
-
-	//	...
-	return $pos;
-}
