@@ -102,3 +102,44 @@ function GitBranch(string $branch) : bool {
 	return true;
 }
 
+/** Get config by .gitmodules file.
+ *
+ * @created    2022-12-05
+ * @param      string         $github_account
+ * @return     boolean|array
+ */
+function GitSubmoduleConfig(string $github_account){
+	//	Switch file name by GitHub account.
+	$file_name = ($github_account === 'private') ? '.gitmodules': '.gitmodules_original';
+
+	//	Get submodule settings.
+	if(!$source = explode("\n", file_get_contents($file_name)) ){
+		echo "Could not read .gitmodules. #".__LINE__;
+		return false;
+	}
+
+	//	Parse the submodule settings.
+	$configs = [];
+	while( $line = array_shift($source) ){
+		//	[submodule "asset/core"]
+		$name = substr($line, 12, -2);
+		$name = str_replace('/', '-', $name);
+
+		//	path, url, branch
+		for($i=0; $i<3; $i++){
+			list($key, $var) = explode("=", array_shift($source));
+			$configs[$name][ trim($key) ] = trim($var);
+		}
+
+		//	...
+		if( $github_account === 'private' ){
+			$configs[$name]['url'] = 'repo:~'.substr($configs[$name]['url'], _HOME_POSITION_);
+		}else{
+			$configs[$name]['url'] = str_replace('/onepiece-framework/', $github_account, $configs[$name]['url']);
+		}
+	}
+
+	//	...
+	return $configs;
+}
+
