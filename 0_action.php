@@ -24,20 +24,12 @@ require_once('9_request.php');
 
 //  Get arguments.
 $branch            = Request('branch')   ?? null;
-$github_account    = Request('username') ?? null;
-$display           = Request('display')  ?? true;
 
 //	Set constant.
 define('_WORKING_DIRECTORY_', '/www/workspace/'                  );
 define('_APP_ROOT_'         , _WORKING_DIRECTORY_ .$branch . '/' );
 define('_REPOSITORY_PATH_'  , "~/repo/op/skeleton/{$branch}.git" );
 define('_END_POINT_'        , basename($_SERVER['argv'][0])      );
-
-//	Maintain compatibility.
-$working_directory = _WORKING_DIRECTORY_;
-$app_root          = _APP_ROOT_;
-$repository_path   = _REPOSITORY_PATH_;
-$base_file_name    = _END_POINT_;
 
 //	Check arguments error.
 if(!include('0_check.php') ){
@@ -69,6 +61,3 @@ if(!include('0_ci.php') ){
 
 //	Finished
 exit(0);
-
-//	Eclipse Notice
-D($github_account, $app_root, $repository_path, $base_file_name, $display, $working_directory);
