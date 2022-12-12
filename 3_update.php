@@ -18,8 +18,7 @@ if(!chdir(_APP_ROOT_) ){
 }
 
 //	...
-$display = Request('display') ?? true;
-if( $display ){ echo "\nStart repository update.\n"; }
+Display('Start repository update.');
 
 //	...
 Git('stash save');
