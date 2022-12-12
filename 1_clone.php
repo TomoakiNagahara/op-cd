@@ -1,5 +1,5 @@
 <?php
-/** git clone repository
+/** op-cd:/1_clone.php
  *
  * Clone repository from local repository.
  * And, Submodule too.

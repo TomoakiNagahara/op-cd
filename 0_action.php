@@ -1,5 +1,5 @@
 <?php
-/** main action
+/** op-cd:/0_action.php
  *
  * # RULES
  *

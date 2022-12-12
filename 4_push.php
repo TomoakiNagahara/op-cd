@@ -1,5 +1,5 @@
 <?php
-/** git push repository
+/** op-cd:/4_push.php
  *
  * @created   2022-11-15
  * @version   1.0

@@ -1,5 +1,5 @@
 <?php
-/** Arguments error check.
+/** op-cd:/0_check.php
  *
  * @created   2022-12-05
  * @version   1.0

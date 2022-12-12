@@ -1,5 +1,5 @@
 <?php
-/** Upstream repository is private remote.
+/** op-cd:/2_upstream.php
  *
  * @created   2022-12-02
  * @version   1.0

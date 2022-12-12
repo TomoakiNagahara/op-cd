@@ -1,5 +1,5 @@
 <?php
-/** Execute CI
+/** op-cd:/0_ci.php
  *
  * @created   2022-12-06
  * @version   1.0
