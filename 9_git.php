@@ -67,3 +67,38 @@ function Git(string $command, string $target='') : void {
 	chdir($current_dir);
 }
 
+/** Switch branch.
+ *
+ * @created    2022-12-06
+ * @param      string      $branch
+ * @return     boolean
+ */
+function GitBranch(string $branch) : bool {
+	//	Switch branch.
+	$strings = `git switch {$branch} 2>/dev/null`;
+
+	//	...
+	$result = [];
+	foreach( explode("\n", $strings) as $string ){
+		//	...
+		switch( $string ){
+			case '':
+			case 'M	.gitmodules':
+			case "Your branch is up to date with 'origin/{$branch}'.":
+				continue 2;
+		}
+
+		//	...
+		$result[] = $string;
+	}
+
+	//	...
+	if( $result ){
+		array_unshift($result, "\nUncommitted files.");
+		echo join("\n", $result)."\n\n";
+	}
+
+	//	...
+	return true;
+}
+
