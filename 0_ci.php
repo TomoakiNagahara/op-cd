@@ -146,7 +146,7 @@ function CheckCommitID(string $php_version) : bool {
 	//	...
 	if( Request('display') ?? true ){
 		$branch = $php_version ? 'PHP'.$php_version: 'master';
-		echo "This branch is Already tested. ({$branch})\n\n";
+		echo "This branch is Already tested. ({$branch})\n";
 	}
 
 	//	...
