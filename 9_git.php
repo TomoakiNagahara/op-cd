@@ -205,3 +205,68 @@ function _Git_Do_Label_(string $command, string $target='') : void {
 	echo $message;
 }
 
+/** Output result of git for user.
+ *
+ * @created    2022-12-09
+ * @param      string      $result
+ * @param      string      $command
+ * @return     void
+ */
+function _Git_Result_(string $result, string $command, string $target){
+	//	...
+	static $_debug;
+	static $_display;
+
+	//	...
+	if(!$_debug ){
+		$_debug   = Request('debug')   ?? 0;
+		$_display = Request('display') ?? 1;
+	}
+
+	//	...
+	$lines = null;
+	foreach( explode("\n", $result) as $line ){
+		//	...
+		if( empty($_debug) ){
+			if( preg_match('|^Entering \'.+\'|', $line) ){ continue; }
+			if( preg_match('|^Current branch (.+) is up to date|', $line) ){ continue; }
+		}
+
+		//	...
+		switch( $command ){
+			case 'fetch':
+			break;
+			case 'stash':
+			case 'stash pop':
+			case 'stash save':
+				switch( $line ){
+					case 'No stash entries found.':
+					case 'No local changes to save':
+					if( empty($_debug) ){ continue 3; }
+				}
+			break;
+			case 'checkout':
+				switch( $line ){
+					case preg_match('|Switched to branch \'.+\'|', $line) ? true: false:
+					if( empty($_debug) ){ continue 3; }
+					case preg_match('|Switched to a new sbranch \'.+\'|', $line) ? true: false:
+					if( empty($_display) and empty($_debug) ){ continue 3; }
+				}
+			break;
+			case 'rebase':
+				switch( $line ){
+					case preg_match('|Your branch is up to date with \'.+\'|', $line) ? true: false:
+					if( empty($_debug) ){ continue 3; }
+				}
+			break;
+			default:
+				Debug("This command is not defined. ({$command})");
+			break;
+		}
+	}
+
+	//	...
+	if( $lines ){
+		echo join("\n", $lines)."\n";
+	}
+}
