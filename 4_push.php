@@ -24,8 +24,11 @@ if(!chdir(_APP_ROOT_) ){
 }
 
 //	Do the push.
-`git push upstream master`;
-`git submodule foreach git push upstream {$branch}`;
+Git('push', 'origin/master'     );
+Git('push', "origin/{$branch}"  );
+Git('push', 'upstream/master'   );
+Git('push', "upstream/{$branch}");
+
 /*
 `git push --recurse-submodules=on-demand`
 */
