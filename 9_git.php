@@ -175,3 +175,33 @@ function GetHomePosition(string $url) : int {
 	return $pos;
 }
 
+/** Output label for user.
+ *
+ * @created    2022-12-09
+ * @param      string      $command
+ */
+function _Git_Do_Label_(string $command, string $target='') : void {
+	//	...
+	switch( trim($command) ){
+		case 'stash':
+		case 'stash save':
+			$message = "  Save to stash.\n";
+			break;
+
+		case 'stash pop':
+			$message = "  Pop from stash.\n";
+			break;
+
+		case 'fetch':
+			$message = "  Fetch {$target} repository.\n";
+			break;
+
+		case 'rebase':
+			$message = "  Rebase {$target} branch.\n";
+			break;
+	}
+
+	//	...
+	echo $message;
+}
+
