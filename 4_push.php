@@ -12,7 +12,10 @@
 $_ = function($constant_name){ return $constant_name; };
 
 //	...
-$branch = Request('branch');
+if(!$branch = Request('branch') ){
+	echo "Empty branch name\n";
+	return false;
+}
 
 //	To clarify current directory.
 if(!chdir(_APP_ROOT_) ){
