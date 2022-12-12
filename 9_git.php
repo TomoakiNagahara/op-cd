@@ -143,3 +143,35 @@ function GitSubmoduleConfig(string $github_account){
 	return $configs;
 }
 
+/** Get home position by URL.
+ *
+ * @created    2022-12-05
+ * @param      string          $url
+ * @return     boolean|number
+ */
+function GetHomePosition(string $url) : int {
+	//	...
+	foreach(['/home/', '/Users/'] as $home){
+		//	...
+		if( 0 === strpos($url, $home) ){
+			$pos = strlen($home);
+			break;
+		}
+	}
+
+	//	Was the home position detected?
+	if(!($pos ?? null) ){
+		echo "Home position could not be detected. ({$url})\n";
+		return false;
+	}
+
+	//	Detect user name position.
+	if(!($pos = strpos($url, '/', $pos)) ){
+		echo "User name position could not be detected. ({$url})\n";
+		return false;
+	}
+
+	//	...
+	return $pos;
+}
+
