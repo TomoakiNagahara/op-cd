@@ -26,7 +26,7 @@ require_once('9_request.php');
 $branch            = Request('branch')   ?? null;
 
 //	Set constant.
-define('_WORKING_DIRECTORY_', '/www/workspace/'                  );
+define('_WORKING_DIRECTORY_', Request('workspace') ?? null       );
 define('_APP_ROOT_'         , _WORKING_DIRECTORY_ .$branch . '/' );
 define('_REPOSITORY_PATH_'  , "~/repo/op/skeleton/{$branch}.git" );
 define('_END_POINT_'        , basename($_SERVER['argv'][0])      );
