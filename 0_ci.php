@@ -17,8 +17,22 @@ if(!chdir(_APP_ROOT_) ){
 	return false;
 }
 
+//	Specify the PHP version.
+if( $php_version = Request('version') ){
+	//	Check positive integer. A string is also possible.
+	if( is_int($php_version) or ctype_digit($php_version) ){
+		$version_list[] = $php_version;
+	}else{
+		echo "This value is not positive integer. ($php_version)\n";
+		return false;
+	}
+}else{
+	//	...
+	$version_list   = ['', 81]; // 70, 71, 72, 73, 74, 80, 81, 82
+}
+
 //	Execute each PHP version.
-foreach(['', 70 /*, 71, 72, 73, 74, 80, 81*/] as $php_version){ // Strict types are inconvenient.
+foreach( $version_list as $php_version){
 	//	...
 	if( ExecuteCI($php_version) ){
 		//	Push git repository to upstream.
