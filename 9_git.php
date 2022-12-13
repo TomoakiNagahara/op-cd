@@ -113,10 +113,19 @@ function GitSubmoduleConfig(string $github_account){
 	$file_name = ($github_account === 'private') ? '.gitmodules': '.gitmodules_original';
 
 	//	Get submodule settings.
-	if(!$source = explode("\n", file_get_contents($file_name)) ){
-		echo "Could not read .gitmodules. #".__LINE__;
+	if(!file_exists($file_name) ){
+		echo "This file does not exist. ($file_name)\n";
 		return false;
 	}
+
+	//	Get submodule settings from file.
+	if(!$file = file_get_contents($file_name) ){
+		echo "Could not read this file. ($file_name)\n";
+		return false;
+	}
+
+	//	Parse submodule settings.
+	$source = explode("\n", $file);
 
 	//	If repository is private.
 	if( $github_account === 'private' ){
