@@ -53,7 +53,7 @@ function ExecuteCI(string $php_version) : bool {
 	//	Check if php installed.
 	if( $path = `command -v php{$php_version} 2>&1` ){
 		$path = trim($path, "\n");
-		Debug("php($php_version) is {$path}");
+		Debug("php{$php_version} is {$path}");
 	}else{
 		echo "This version of PHP is not installed. ($php_version)\n";
 		return false;
