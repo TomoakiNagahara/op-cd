@@ -16,7 +16,7 @@
  */
 function Debug(string $string) : void {
 	//	...
-	if( Request('debug') ?? true ){
+	if( Request('debug') ?? false ){
 		echo $string . PHP_EOL;
 	}
 }
