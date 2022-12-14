@@ -274,6 +274,8 @@ function _Git_Result_(string $result, string $command, string $target){
 					if( empty($_debug) ){ continue 3; }
 				}
 			break;
+			case 'push':
+			break;
 			default:
 				Debug("This command is not defined. ({$command})");
 			break;
