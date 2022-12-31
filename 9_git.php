@@ -150,7 +150,7 @@ function GitSubmoduleConfig(string $github_account){
 		if( $github_account === 'private' ){
 			$configs[$name]['url'] = 'repo:~'.substr($configs[$name]['url'], $position_of_home);
 		}else{
-			$configs[$name]['url'] = str_replace('/onepiece-framework/', $github_account, $configs[$name]['url']);
+			$configs[$name]['url'] = str_replace('/onepiece-framework/', "/{$github_account}/", $configs[$name]['url']);
 		}
 	}
 
