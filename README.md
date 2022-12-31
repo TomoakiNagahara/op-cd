@@ -4,7 +4,21 @@ Continuous Delivery dedicated to onepiece-framework
 # Usage
 
 ```sh
-php ./0_action.php [branch name] [GitHub push account]
+php 0_action.php branch=2022 workspace=/www/workspace origin={local/GITHUB_USER_NAME} upstream={private/GITHUB_USER_NAME} [display={0/1}] [debug={0/1}] [version={70/80,81}]
+```
+
+ * The order of arguments is variable.
+ * Enclosed arguments in brackets are optional.
+
+```
+branch    : Submodule branch name. Skeleton is always master.
+workspace : Cloning directory.
+origin    : Origin repository.
+upstream  : Upstream repository.
+username  : Upstream GitHub user name or "private" flag.
+display   : You can hide in progress message.    - default is show
+debug     : Display debug information.           - default is hide
+version   : You can specify execute PHP version. - default is empty
 ```
 
 # Files
