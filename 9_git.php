@@ -118,6 +118,12 @@ function GitSubmoduleConfig(string $github_account){
 		return false;
 	}
 
+	//	If repository is private.
+	if( $github_account === 'private' ){
+		//	Get position of home path.
+		$position_of_home = strlen(`realpath ~/`) -1;
+	}
+
 	//	Parse the submodule settings.
 	$configs = [];
 	while( $line = array_shift($source) ){
@@ -133,7 +139,7 @@ function GitSubmoduleConfig(string $github_account){
 
 		//	...
 		if( $github_account === 'private' ){
-			$configs[$name]['url'] = 'repo:~'.substr($configs[$name]['url'], _HOME_POSITION_);
+			$configs[$name]['url'] = 'repo:~'.substr($configs[$name]['url'], $position_of_home);
 		}else{
 			$configs[$name]['url'] = str_replace('/onepiece-framework/', $github_account, $configs[$name]['url']);
 		}
