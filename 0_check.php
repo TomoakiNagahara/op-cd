@@ -17,7 +17,8 @@ $github_account = Request('username');
 
 //	Generate help.
 if( empty($branch) or empty($github_account) or empty(_WORKING_DIRECTORY_) ){
-	$cmd = "php {$_(_END_POINT_)} branch=2022 workspace=/www/workspace username=YOUR_GITHUB_USER_NAME display=1 debug=0 version=82";
+	// @see https://www.rarejob.com/englishlab/column/20210928_02/
+	$cmd = "php {$_(_END_POINT_)} branch=2022 workspace=/www/workspace username=YOUR_GITHUB_USER_NAME [display={0/1}] [debug={0/1}] [version={70/80/81,82}]";
 }
 
 //	Empty branch name.
