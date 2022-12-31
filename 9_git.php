@@ -115,13 +115,13 @@ function GitSubmoduleConfig(string $github_account){
 	//	Get submodule settings.
 	if(!file_exists($file_name) ){
 		echo "This file does not exist. ($file_name)\n";
-		return false;
+		exit(1);
 	}
 
 	//	Get submodule settings from file.
 	if(!$file = file_get_contents($file_name) ){
 		echo "Could not read this file. ($file_name)\n";
-		return false;
+		exit(1);
 	}
 
 	//	Parse submodule settings.
