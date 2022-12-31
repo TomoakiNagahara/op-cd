@@ -29,6 +29,12 @@ Git('push', "origin/{$branch}"  );
 Git('push', 'upstream/master'   );
 Git('push', "upstream/{$branch}");
 
+/* @var $php_version integer */
+if( $php_version ?? null ){
+	Git('push', "origin/php{$php_version}"  );
+	Git('push', "upstream/php{$php_version}");
+}
+
 /*
 `git push --recurse-submodules=on-demand`
 */
