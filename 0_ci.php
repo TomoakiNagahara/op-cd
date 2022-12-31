@@ -55,7 +55,7 @@ function ExecuteCI(string $php_version) : bool {
 		$path = trim($path, "\n");
 		Debug("php{$php_version} is {$path}");
 	}else{
-		echo "This version of PHP is not installed. ($php_version)\n";
+		echo "This PHP version is not installed. ($php_version)\n";
 		return false;
 	}
 
