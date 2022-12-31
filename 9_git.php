@@ -214,6 +214,9 @@ function _Git_Do_Label_(string $command, string $target='') : void {
 		case 'rebase':
 			$message = "  Rebase {$target} branch.\n";
 			break;
+
+		default:
+			$message = "This command is not define. ($command)";
 	}
 
 	//	...
