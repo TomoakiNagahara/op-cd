@@ -4,18 +4,20 @@ Continuous Delivery dedicated to onepiece-framework
 # Usage
 
 ```sh
-php 0_action.php branch=2022 workspace=/www/workspace origin={local/GITHUB_USER_NAME} upstream={private/GITHUB_USER_NAME} [display={0/1}] [debug={0/1}] [version={70/80,81}]
+php action.php config=./config.php
 ```
 
+ * Can pass config file.
+ * Config file is PHP file.
+ * Arguments can be used to overwrite config.
  * The order of arguments is variable.
- * Enclosed arguments in brackets are optional.
 
 ```
+config    : Arguments can be write in a config file.
 branch    : Submodule branch name. Skeleton is always master.
 workspace : Cloning directory.
-origin    : Origin repository.
-upstream  : Upstream repository.
-username  : Upstream GitHub user name or "private" flag.
+origin    : Origin repository path or URL.
+upstream  : Upstream repository path or URL.
 display   : You can hide in progress message.    - default is show
 debug     : Display debug information.           - default is hide
 version   : You can specify execute PHP version. - default is empty
@@ -29,7 +31,7 @@ version   : You can specify execute PHP version. - default is empty
  * 2_upstream.php - Setup upstream.
  * 2_update.php   - PULL of origin and upstream.
  * 3_push.php     - PUSH to upstream.
- * ci.sh          - Required for git pre-push. This will eventually become unnecessary. <-- Why? How?
+ * ci.sh          - Required for git pre-push. This will eventually become unnecessary.
 
 # Change repository
 
