@@ -98,7 +98,7 @@ class Git
 
 		//	...
 		if(!file_exists($git_root) ){
-			Display(" * `git clone {$origin} {$branch}`", false);
+			Display(" * `git clone {$origin} {$branch}`");
 			if( $result  = `git clone {$origin} {$redirect}` ){
 				foreach( explode("\n", $result) as $line ){
 					switch( $line = trim($line) ){
@@ -112,7 +112,7 @@ class Git
 							$line = $stash . $line;
 						//	Display
 						default:
-							Display($line, false);
+							Display($line);
 						break;
 					}
 				}
@@ -186,11 +186,11 @@ class Git
 		}
 
 		//	...
-		Display("\n * `$do`", false);
+		Display("\n * `$do`");
 		echo `$do 2>&1`;
 
 		//	Init submodules.
-		Display("\n * `git submodule update --init --recursive`", false);
+		Display("\n * `git submodule update --init --recursive`");
 		$result  = `git submodule update --init --recursive $redirect`;
 		foreach( explode("\n", $result) as $line ){
 			switch( $line = trim($line) ){
@@ -203,16 +203,16 @@ class Git
 					$line = $stash . $line;
 				//	Display
 				default:
-					Display($line, false);
+					Display($line);
 				break;
 			}
 		}
 
 		//	Checkout submodules
-		Display("\n * Do submodule configuration.", false);
+		Display("\n * Do submodule configuration.");
 		foreach( self::SubmoduleConfig(true) as $key => $config ){
 			//	...
-			Display(" - {$key} : {$config['path']}", false);
+			Display(" - {$key} : {$config['path']}");
 
 			//	...
 			if(!chdir( $git_root . $config['path'] ) ){
@@ -220,7 +220,7 @@ class Git
 			}
 
 			//	Checkout
-			Display("  `git checkout {$branch}", false);
+			Display("  `git checkout {$branch}");
 			$result  = `git checkout {$branch} $redirect`;
 			foreach( explode("\n", $result) as $line ){
 				switch( $line = trim($line) ){
@@ -228,11 +228,11 @@ class Git
 					case '':
 					case "Switched to a new branch '{$branch}'":
 					case "Branch '{$branch}' set up to track remote branch '{$branch}' from 'origin'.":
-						Display('   '.$line, false);
+						Display('   '.$line);
 						break;
 					//	Display
 					default:
-						Display($line, false);
+						Display($line);
 					break;
 				}
 			}
@@ -259,17 +259,17 @@ class Git
 		}
 
 		//	main
-		Display(' * Set upstream URL to main repository.', false);
+		Display(' * Set upstream URL to main repository.');
 		if( $result = `git config --get remote.upstream.url $redirect` ){
-			Display(" - Already set upstream URL: $result", false);
+			Display(" - Already set upstream URL: $result");
 		}else{
-			Display("  `git remote add upstream {$upstream}`", false);
+			Display("  `git remote add upstream {$upstream}`");
 			echo `git remote add upstream {$upstream}  $redirect`;
 		}
-		echo "\n";
+		Display(' ');
 
 		//	submodules
-		Display(' * Set upstream URL to submodules.', false);
+		Display(' * Set upstream URL to submodules.');
 		$configs_current  = self::SubmoduleConfig(true);
 		$configs_original = self::SubmoduleConfig(false);
 		foreach( $configs_current as $key => $config ){
@@ -282,15 +282,15 @@ class Git
 			chdir($git_root . $config['path']);
 
 			//	Submodule.
-			Display(" - {$key}: {$config['path']}", false);
+			Display(" - {$key}: {$config['path']}");
 			if( $result = `git config --get remote.upstream.url` ){
-				Display(" - Already set upstream URL: $result", false);
+				Display(" - Already set upstream URL: $result");
 			}else{
-				Display("  `git remote add upstream {$upstream}`", false);
+				Display("  `git remote add upstream {$upstream}`");
 				echo `git remote add upstream {$upstream}`;
 			}
 		}
-		echo "\n";
+		Display(' ');
 	}
 
 	/** Calc repository path or URL.
