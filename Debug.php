@@ -61,8 +61,8 @@ function DebugTrace($traces)
 
 	//	...
 	foreach( $traces as $trace){
-		$file   = $trace['file'];
-		$line   = $trace['line'];
+		$file   = $trace['file']     ?? null;
+		$line   = $trace['line']     ?? null;
 		$func   = $trace['function'] ?? null;
 		$class  = $trace['class']    ?? null;
 		$type   = $trace['type']     ?? null;
@@ -70,7 +70,9 @@ function DebugTrace($traces)
 		$args   = $trace['args']     ?? [];
 
 		//	...
-		$file = str_replace($_root, 'CD:', $file);
+		if( $file ){
+			$file = str_replace($_root, 'CD:', $file);
+		}
 
 		//	...
 		$args = DebugTraceArgs($args);
@@ -111,6 +113,7 @@ function DebugTraceArgs(array $args) : string
 				$result = $arg;
 				break;
 			case 'string':
+				$arg = str_replace(["\n","\r","\t"], ['\n','\r','\t'], $arg);
 				$result = "'{$arg}'";
 				break;
 			default:
