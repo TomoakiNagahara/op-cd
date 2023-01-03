@@ -14,6 +14,11 @@ $config['workspace'] = '/www/workspace/';
 $config['branch']    = '2022';
 $config['upstream']  = 'repo:~/repo/op/skeleton/2022.git';
 $config['origin']    = '~/repo/op/skeleton/2022.git';
+$config['display']   = '1';
+$config['debug']     = '1';
+/*
+$config['version']   = '74,82';
+*/
 
 //	...
 return $config;
