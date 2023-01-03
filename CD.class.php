@@ -63,7 +63,7 @@ class CD
 		//	...
 		foreach(['workspace','branch','upstream','origin'] as $key ){
 			if(!${$key} = Request($key) ){
-				throw new Exception("Arguments error, {$key} is not set. Please read README.md.");
+				throw new Exception("This arguments is not set ({$key}). Please read README.md.");
 			}
 		}
 
@@ -98,8 +98,10 @@ class CD
 			throw new Exception("chdir failed. ($workspace)");
 		}
 
-		//	Do clone.
+		//	...
 		Git::Clone();
+		Git::SetOrigin();
+		Git::SetUpstream();
 	}
 
 	/** Fetch
