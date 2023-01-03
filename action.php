@@ -18,8 +18,8 @@ ini_set('log_errors'    , 0);
 chdir(__DIR__);
 
 //	...
-require('Error.php');
 require('Debug.php');
+require('Error.php');
 require('Display.php');
 require('9_request.php');
 require('CD.class.php');
