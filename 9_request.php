@@ -53,5 +53,28 @@ function GetArgv() : array {
 	}
 
 	//	...
+	if( $path = $argv['config'] ){
+		//	...
+		if(!file_exists($path) ){
+			throw new Exception("Config file does not exists. ({$path})");
+		}
+
+		//	Sandbox
+		$config = call_user_func(function($path){ return require($path); }, $path);
+
+		//	...
+		foreach( $config as $key => $val ){
+			//	...
+			if( isset($argv[$key]) ){
+				//	already setted.
+				continue;
+			}
+
+			//	...
+			$argv[$key] = $val;
+		}
+	}
+
+	//	...
 	return $argv;
 }
