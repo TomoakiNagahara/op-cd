@@ -30,7 +30,7 @@ function Display(string $message)
 		echo $message . "\n";
 
 		//	...
-		if( $_debug ){
+		if( $_debug > 1 ){
 			DebugTrace(debug_backtrace());
 		}
 	}
