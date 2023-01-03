@@ -87,42 +87,36 @@ class Git
 		//	...
 		$workspace = Request('workspace');
 		$origin    = Request('origin');
-		$debug     = Request('debug');
+		$branch    = Request('branch');
 		$git_root  = self::Root();
-		$redirect  = $debug ? '': '2>&1';
+		$redirect  = '2>&1';
 
-		//	...
+		//	Change directory to workspace.
 		if(!chdir($workspace) ){
 			throw new Exception("`chdir` was failed. ($workspace)");
 		}
 
 		//	...
 		if(!file_exists($git_root) ){
-			Display(" * git clone {$origin}");
-			$result  = `git clone {$origin} {$redirect}`;
-			$display = [];
-			foreach( explode("\n", $result) as $line ){
-				switch( $line = trim($line) ){
-					case '':
-					case "done.":
+			Display(" * `git clone {$origin} {$branch}`", false);
+			if( $result  = `git clone {$origin} {$redirect}` ){
+				foreach( explode("\n", $result) as $line ){
+					switch( $line = trim($line) ){
+						//	Discard
+						case '':
+							break;
+						case "Cloning into '{$branch}'...":
+							$stash = $line;
+							break;
+						case 'done.':
+							$line = $stash . $line;
+						//	Display
+						default:
+							Display($line, false);
 						break;
-					default:
-						$display[] = $line;
-						break;
+					}
 				}
 			}
-			Display( join("\n", $display) );
-		}
-
-		//	...
-		if(!chdir($git_root) ){
-			throw new Exception("`chdir` was failed. ($git_root)");
-		}
-
-		//	...
-		if(!file_exists('.gitmodule_origin') ){
-			self::SetOrigin();
-			self::SetUpstream();
 		}
 	}
 
@@ -167,14 +161,17 @@ class Git
 		$git_root = self::Root();
 		$origin   = Request('origin');
 		$branch   = Request('branch');
-		$debug    = Request('debug');
-		$redirect = $debug ? '': '2>&1';
+		$redirect = '2>&1';
 		list($origin_is, $user_name) = self::_WhichIs($origin);
+
+		//	Change directory to git root.
+		if(!chdir($git_root) ){
+			throw new Exception("`chdir` was failed. ($git_root)");
+		}
 
 		//	Change .gitmodule file.
 		switch( $origin_is ){
 			case 'local':
-				Display();
 				$do = 'sh ./asset/git/submodule/local.sh';
 				break;
 			case 'remote':
@@ -189,57 +186,56 @@ class Git
 		}
 
 		//	...
-		$result = `$do`;
-		Display($result);
+		Display("\n * `$do`", false);
+		echo `$do 2>&1`;
 
 		//	Init submodules.
+		Display("\n * `git submodule update --init --recursive`", false);
 		$result  = `git submodule update --init --recursive $redirect`;
-		$display = [];
-		$save    = [];
 		foreach( explode("\n", $result) as $line ){
 			switch( $line = trim($line) ){
+				//	Discard
+				case strpos(' '.$line, 'Cloning into ') ? true: false:
+					$stash = $line;
 				case '':
-				case "done.":
 					break;
+				case "done.":
+					$line = $stash . $line;
+				//	Display
 				default:
-					$display[] = $line;
+					Display($line, false);
 				break;
 			}
-			$save[] = $line;
 		}
-		Display( join("\n", $display) );
 
 		//	Checkout submodules
+		Display("\n * Do submodule configuration.", false);
 		foreach( self::SubmoduleConfig(true) as $key => $config ){
+			//	...
+			Display(" - {$key} : {$config['path']}", false);
+
 			//	...
 			if(!chdir( $git_root . $config['path'] ) ){
 				throw new Exception("Change directory was failed. ({$git_root}{$config['path']})");
 			}
 
 			//	Checkout
-			$result = `git checkout {$branch} $redirect`;
-			$display = [];
-			$save    = [];
+			Display("  `git checkout {$branch}", false);
+			$result  = `git checkout {$branch} $redirect`;
 			foreach( explode("\n", $result) as $line ){
 				switch( $line = trim($line) ){
+					//	Discard
 					case '':
 					case "Switched to a new branch '{$branch}'":
 					case "Branch '{$branch}' set up to track remote branch '{$branch}' from 'origin'.":
+						Display('   '.$line, false);
 						break;
+					//	Display
 					default:
-						$display[] = $line;
+						Display($line, false);
 					break;
 				}
-				$save[] = $line;
 			}
-			if( $display ){
-				Display("{$key}: " . join("\n", $display));
-			}
-		}
-
-		//	...
-		if( 0 ){
-			Display($save);
 		}
 	}
 
@@ -253,6 +249,7 @@ class Git
 		$git_root = self::Root();
 		$origin   = Request('origin');
 		$upstream = Request('upstream');
+		$redirect = '2>&1';
 		list($orign_is,    $user_name) = self::_WhichIs($origin);
 		list($upstream_is, $user_name) = self::_WhichIs($upstream);
 
@@ -262,11 +259,17 @@ class Git
 		}
 
 		//	main
-		if(!`git config --get remote.upstream.url` ){
-			`git remote add upstream {$upstream}`;
+		Display(' * Set upstream URL to main repository.', false);
+		if( $result = `git config --get remote.upstream.url $redirect` ){
+			Display(" - Already set upstream URL: $result", false);
+		}else{
+			Display("  `git remote add upstream {$upstream}`", false);
+			echo `git remote add upstream {$upstream}  $redirect`;
 		}
+		echo "\n";
 
 		//	submodules
+		Display(' * Set upstream URL to submodules.', false);
 		$configs_current  = self::SubmoduleConfig(true);
 		$configs_original = self::SubmoduleConfig(false);
 		foreach( $configs_current as $key => $config ){
@@ -274,13 +277,20 @@ class Git
 			$current  = $configs_current[$key]['url'];
 			$original = $configs_original[$key]['url'];
 			$upstream = self::_CalcRepository($current, $original, $orign_is, $upstream_is, $user_name);
+
 			//	Change submodule directory.
 			chdir($git_root . $config['path']);
+
 			//	Submodule.
-			if(!`git config --get remote.upstream.url` ){
-				`git remote add upstream {$upstream}`;
+			Display(" - {$key}: {$config['path']}", false);
+			if( $result = `git config --get remote.upstream.url` ){
+				Display(" - Already set upstream URL: $result", false);
+			}else{
+				Display("  `git remote add upstream {$upstream}`", false);
+				echo `git remote add upstream {$upstream}`;
 			}
 		}
+		echo "\n";
 	}
 
 	/** Calc repository path or URL.
