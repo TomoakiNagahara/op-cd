@@ -16,11 +16,16 @@
  * @author     Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
  * @copyright  Tomoaki Nagahara All right reserved.
  */
-function Debug($args)
+function Debug($args, $trace=true)
 {
 	static $_debug = null;
 	if( $_debug ===  null ){
-		$_debug = Request('debug') ? 1: 0;
+		$_debug = Request('debug') ?? 0;
+	}
+
+	//	...
+	if(!$_debug ){
+		return;
 	}
 
 	//	...
@@ -34,7 +39,9 @@ function Debug($args)
 	}
 
 	//	...
-	DebugTrace(debug_backtrace());
+	if( $trace ){
+		DebugTrace(debug_backtrace());
+	}
 }
 
 /** Debug trace
@@ -85,7 +92,10 @@ function DebugTrace($traces)
 		}
 
 		//	...
-		echo "{$file} #{$line} - {$function}({$args})\n";
+		$head = $file ? "{$file} #{$line} - ": null;
+
+		//	...
+		echo "{$head}{$function}({$args})\n";
 	}
 }
 
