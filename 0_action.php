@@ -41,10 +41,12 @@ if(!file_exists(_APP_ROOT_) ){
 	}
 }
 
+/*
 //	Git update.
 if(!include('3_update.php') ){
 	exit(__LINE__);
 }
+*/
 
 //	Execute CI.
 if(!include('0_ci.php') ){

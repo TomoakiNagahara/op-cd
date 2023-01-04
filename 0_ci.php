@@ -28,7 +28,7 @@ if( $php_version = Request('version') ){
 	}
 }else{
 	//	...
-	$version_list   = ['', 81]; // 70, 71, 72, 73, 74, 80, 81, 82
+	$version_list   = ['']; // 70, 71, 72, 73, 74, 80, 81, 82
 }
 
 //	Execute each PHP version.
@@ -50,29 +50,16 @@ return true;
  * @return     boolean
  */
 function ExecuteCI(string $php_version) : bool {
-	//	Check if php installed.
-	if( $path = `command -v php{$php_version} 2>&1` ){
-		$path = trim($path, "\n");
-		Debug("php{$php_version} is {$path}");
-	}else{
-		echo "This PHP version is not installed. ($php_version)\n";
-		return false;
+	//	Change branches if set php version.
+	if( $php_version ){
+		if(!ChangeSubmoduleBranches($php_version) ){
+			return false;
+		}
 	}
 
-	//	If php version is specified.
-	$branch = ($php_version === '') ? 'master': 'php'.$php_version;
-
-	//	Get branch list.
-	$branch_list = `git branch`;
-
-	//	Check if branch exists.
-	if( strpos($branch_list, $branch) === false ){
-		echo "This branch is not exists. ($branch)\n";
-		return false;
-	}
-
-	//	Switch branch.
-	if(!GitBranch($branch) ){
+	//	Change app root directory.
+	if(!chdir(_APP_ROOT_) ){
+		echo "Change directory was failed. (_APP_ROOT_)";
 		return false;
 	}
 
@@ -98,6 +85,49 @@ function ExecuteCI(string $php_version) : bool {
 
 	//	Return result.
 	return true;
+}
+
+/** Change submodule branches.
+ *
+ * @created    2023-01-01
+ * @param      string      $php_version
+ * @return     boolean
+ */
+function ChangeSubmoduleBranches(string $php_version)
+{
+	//	Check if php installed.
+	if( $path = `command -v php{$php_version} 2>&1` ){
+		$path = trim($path, "\n");
+		Debug("php{$php_version} is {$path}");
+	}else{
+		echo "This PHP version is not installed. ($php_version)\n";
+		return false;
+	}
+
+	//	If php version is specified.
+	$branch = ($php_version === '') ? 'master': 'php'.$php_version;
+
+	//	Skeleton
+	GitSwitchBranch($branch);
+
+	//	Submodules
+	$branch  = Request('branch');
+	$configs = GitSubmoduleConfig();
+	foreach( $configs as $config ){
+		//	Change app root directory.
+		if(!chdir(_APP_ROOT_) ){
+			echo "Change directory was failed. (_APP_ROOT_)";
+			return false;
+		}
+		//	...
+		if(!chdir($path = $config['path']) ){
+			echo "Change directory failed. ({$path})";
+			return false;
+		}
+
+		//	...
+		GitSwitchBranch($branch);
+	}
 }
 
 /** Execute code.

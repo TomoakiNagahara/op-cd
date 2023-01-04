@@ -46,7 +46,7 @@ function Git(string $command, string $target='') : void {
 
 		//	If rebase, first checkout.
 		if( $command === 'rebase' ){
-			$branch  = explode('/', $target)[1];
+			$branch  = strpos($target, '/') ? explode('/', $target)[1]: $target;
 			_Git_Result_(`git checkout {$branch} {$redirect}` ?? '', 'checkout', $target);
 		}
 		_Git_Result_(`git {$command} {$target} {$redirect}` ?? '', $command, $target);
@@ -58,7 +58,7 @@ function Git(string $command, string $target='') : void {
 	//	Skeleton
 	if( $command === 'rebase' ){
 		//	If rebase, first checkout.
-		$branch  = explode('/', $target)[1];
+		$branch  = strpos($target, '/') ? explode('/', $target)[1]: $target;
 		_Git_Result_(`git checkout {$branch} {$redirect}` ?? '', 'checkout', $target);
 	}
 	_Git_Result_(`git {$command} {$target} {$redirect}` ?? '', $command, $target);
@@ -108,7 +108,12 @@ function GitBranch(string $branch) : bool {
  * @param      string         $github_account
  * @return     boolean|array
  */
-function GitSubmoduleConfig(string $github_account){
+function GitSubmoduleConfig(string $github_account=''){
+	//	...
+	if(!$github_account ){
+		$github_account = Request('username') ?? Request('origin');
+	}
+
 	//	Switch file name by GitHub account.
 	$file_name = ($github_account === 'private') ? '.gitmodules': '.gitmodules_original';
 
@@ -190,6 +195,47 @@ function GetHomePosition(string $url) : int {
 	return $pos;
 }
 
+/** Git switch branch.
+ *
+ * @created    2023-01-01
+ * @param      string      $branch
+ */
+function GitSwitchBranch(string $branch)
+{
+	//	Check if already exists branch name.
+	$branch_list = `git branch`;
+	if( strpos($branch_list, $branch) ){
+		//	Check current branch is.
+		foreach( explode("\n", $branch_list) as $line ){
+			//	Check if line is target.
+			if(!strpos($line, $branch) ){
+				//	Not this line.
+				continue;
+			}
+			//	Check if selected branch.
+			if( $line[0] === '*' ){
+				//	Current branch does.
+				return;
+			}
+			//	Select a branch as it is not selected.
+			`git switch {$branch}`;
+			return;
+		}
+	}
+
+	//	Check if branch exists in repository.
+	$branch_list = `git branch -a`;
+	if( strpos($branch_list, $branch) ){
+		`git checkout origin/{$branch} -b {$branch}`;
+		return;
+	}
+
+	//	Change to main branch.
+	$branch = (rtrim(getcwd(),'/') === rtrim(_APP_ROOT_,'/')) ? 'master': Request('branch');
+	`git switch {$branch}`;
+	return;
+}
+
 /** Output label for user.
  *
  * @created    2022-12-09
@@ -213,6 +259,11 @@ function _Git_Do_Label_(string $command, string $target='') : void {
 
 		case 'rebase':
 			$message = "  Rebase {$target} branch.\n";
+			break;
+
+		case 'switch':
+		case 'checkout':
+			$message = "  {$command} {$target}.\n";
 			break;
 
 		default:
@@ -278,6 +329,7 @@ function _Git_Result_(string $result, string $command, string $target){
 				}
 			break;
 			case 'push':
+			case 'switch':
 			break;
 			default:
 				Debug("This command is not defined. ({$command})");

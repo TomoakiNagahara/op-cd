@@ -20,14 +20,20 @@ if(!chdir(_APP_ROOT_) ){
 //	...
 Display('Start repository update.');
 
-//	...
+//	Save
 Git('stash save');
-Git('fetch',  'origin'  );
-Git('fetch',  'upstream');
-Git('rebase', 'upstream/master');
-Git('rebase', 'origin/master'  );
-Git('rebase', 'upstream/2022'  );
-Git('rebase', 'origin/2022'    );
+//	Fetch
+Git('fetch',    'origin'  );
+Git('fetch',    'upstream');
+//	Rebase upstream to origin
+Git('checkout', 'upstream/master');
+Git('branch',   'upstream');
+Git('switch',   'upstream');
+Git('rebase',   'master'  );
+//	Rebase origin include upstream
+Git('switch',   'master');
+Git('rebase',   'upstream');
+//	Pop
 Git('stash pop');
 
 //  Successful.
