@@ -42,8 +42,7 @@ class CD
 		//	...
 		self::Init();
 		self::Clone();
-		self::Fetch();
-		self::Rebase();
+		self::Update();
 		self::CI();
 		self::Push();
 
@@ -69,7 +68,7 @@ class CD
 
 		/* @var $workspace string */
 		/* @var $branch    string */
-		self::$_app_root  = rtrim($workspace,'/').'/'.$branch.'/';
+		self::$_git_root  = rtrim($workspace,'/').'/'.$branch.'/';
 	}
 
 	/** Clone
@@ -79,7 +78,7 @@ class CD
 	static function Clone()
 	{
 		//	Check if already cloned.
-		if( file_exists(self::$_app_root) ){
+		if( file_exists(self::$_git_root) ){
 			//	Already cloned.
 			return;
 		}
@@ -108,18 +107,20 @@ class CD
 	 *
 	 * @created    2023-01-02
 	 */
-	static function Fetch()
+	static function Update()
 	{
+		//	Change git root directory.
+		if(!chdir(self::$_git_root) ){
+			throw new Exception('Change directory was failed.('.self::$_git_root.')');
+		}
 
-	}
-
-	/** Rebase
-	 *
-	 * @created    2023-01-02
-	 */
-	static function Rebase()
-	{
-
+		/* @var $output string  */
+		/* @var $status integer */
+		exec("sh asset/git/submodule/update.sh", $output, $status);
+		foreach( $output as $line ){
+			echo $line;
+		}
+		echo "\n";
 	}
 
 	/** CI
@@ -128,7 +129,30 @@ class CD
 	 */
 	static function CI()
 	{
+		//	Change git root directory.
+		if(!chdir(self::$_git_root) ){
+			throw new Exception('Change directory was failed.('.self::$_git_root.')');
+		}
 
+		//	...
+		$display   = Request('display');
+		$debug     = Request('debug');
+		$args[]    = "display={$display}";
+		$args[]    = "debug={$debug}";
+		$args      = join(' ', $args);
+
+		/* @var $output string  */
+		/* @var $status integer */
+		exec("php ci.php $args", $output, $status);
+		foreach( $output as $line ){
+			echo $line;
+		}
+		echo "\n";
+
+		//	...
+		if( $status ){
+			throw new Exception("ci.php is failed.");
+		}
 	}
 
 	/** Push
@@ -137,6 +161,29 @@ class CD
 	 */
 	static function Push()
 	{
+		//	Change git root directory.
+		if(!chdir(self::$_git_root) ){
+			throw new Exception('Change directory was failed.('.self::$_git_root.')');
+		}
 
+		/* @var $output string  */
+		/* @var $status integer */
+		$branch    = Request('branch');
+
+		//	Main
+		Display(' * git push upstream master');
+		exec("git push upstream master", $output, $status);
+		foreach( $output as $line ){
+			echo $line;
+		}
+		echo "\n";
+
+		//	Submodules.
+		Display(" * sh asset/git/submodule/push.sh upstream {$branch}");
+		exec("sh asset/git/submodule/push.sh upstream {$branch}", $output, $status);
+		foreach( $output as $line ){
+			echo $line;
+		}
+		echo "\n";
 	}
 }
