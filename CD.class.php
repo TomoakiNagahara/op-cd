@@ -34,6 +34,28 @@ class CD
 	 */
 	static $_app_root;
 
+	/** Change directory.
+	 *
+	 * @created    2023-01-02
+	 * @param      string      $path
+	 * @throws     Exception
+	 */
+	static function ChangeDir(string $path='')
+	{
+		//	...
+		if( empty(self::$_git_root) ){
+			self::Init();
+		}
+
+		//	...
+		$path = self::$_git_root . $path;
+
+		//	...
+		if(!chdir($path)){
+			throw new Exception("Change directory failed. ($path)");
+		}
+	}
+
 	/** Auto
 	 *
 	 * @created    2023-01-02
@@ -43,8 +65,27 @@ class CD
 		self::Init();
 		self::Clone();
 		self::Update();
-		self::CI();
-		self::Push();
+
+		//	...
+		foreach(['', 81] as $version){
+			/*
+			//	...
+			if( $version ){
+				//	main
+				Git::Switch("php{$version}");
+
+				//	submodule
+
+				echo __FILE__;
+				return;
+			}
+			*/
+
+			//	...
+			if( self::CI($version) ){
+				self::Push();
+			}
+		}
 
 		//	...
 		Display(" * All inspection is complete.");
@@ -110,29 +151,59 @@ class CD
 	static function Update()
 	{
 		//	Change git root directory.
+		self::ChangeDir();
+
+		//	...
+		$branch = Request('branch');
+
+		//	Main
+		Display(" * Update main repository");
+		Git::Fetch('origin');
+		Git::Save();
+		Git::Switch('master');
+		Git::Rebase('origin/master');
+		Git::Pop();
+
+		//	Submodule
+		Display(" * Update submodule repository");
+		foreach( Git::SubmoduleConfig(true) as $key => $config) {
+			Display(" - {$key} : {$branch}");
+
+			//	...
+			self::ChangeDir($config['path']);
+
+			//	...
+			Git::Fetch('origin');
+			Git::Save();
+			Git::Switch($config['branch']);
+			Git::Rebase("origin/{$config['branch']}");
+			Git::Pop();
+		}
+
+		/*
+		//	Change git root directory.
 		if(!chdir(self::$_git_root) ){
 			throw new Exception('Change directory was failed.('.self::$_git_root.')');
 		}
 
-		/* @var $output string  */
-		/* @var $status integer */
+		$output = null;
+		$status = null;
 		exec("sh asset/git/submodule/update.sh", $output, $status);
 		foreach( $output as $line ){
 			echo $line;
 		}
 		echo "\n";
+		*/
 	}
 
 	/** CI
 	 *
 	 * @created    2023-01-02
 	 */
-	static function CI()
+	static function CI(string $version) : bool
 	{
 		//	Change git root directory.
-		if(!chdir(self::$_git_root) ){
-			throw new Exception('Change directory was failed.('.self::$_git_root.')');
-		}
+		self::ChangeDir();
 
 		//	...
 		$display   = Request('display');
@@ -141,9 +212,9 @@ class CD
 		$args[]    = "debug={$debug}";
 		$args      = join(' ', $args);
 
-		/* @var $output string  */
-		/* @var $status integer */
-		exec("php ci.php $args", $output, $status);
+		$output = null;
+		$status = null;
+		exec("php{$version} ci.php $args", $output, $status);
 		foreach( $output as $line ){
 			echo $line;
 		}
@@ -151,24 +222,44 @@ class CD
 
 		//	...
 		if( $status ){
-			throw new Exception("ci.php is failed.");
+			Display(" ! ci.php is failed.");
 		}
+
+		//	...
+		return $status ? false: true;
 	}
 
 	/** Push
 	 *
 	 * @created    2023-01-02
 	 */
-	static function Push()
+	static function Push(?string $branch=null)
 	{
 		//	Change git root directory.
-		if(!chdir(self::$_git_root) ){
-			throw new Exception('Change directory was failed.('.self::$_git_root.')');
+		self::ChangeDir();
+
+		//	Main
+		Display(" * Push main repository");
+		Git::Push('upstream', $branch ?? 'master');
+
+		//	Submodule
+		Display(" * Push submodule repository");
+		foreach( Git::SubmoduleConfig(true) as $key => $config) {
+			//	...
+			Display(" - {$key}, {$config['path']}");
+
+			//	...
+			self::ChangeDir($config['path']);
+
+			//	...
+			Git::Push('upstream', $branch ?? $config['branch']);
 		}
 
-		/* @var $output string  */
-		/* @var $status integer */
-		$branch    = Request('branch');
+		/*
+		//	...
+		$output = null;
+		$status = null;
+		$branch = Request('branch');
 
 		//	Main
 		Display(' * git push upstream master');
@@ -185,5 +276,6 @@ class CD
 			echo $line;
 		}
 		echo "\n";
+		*/
 	}
 }
