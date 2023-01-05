@@ -334,4 +334,199 @@ class Git
 		//	...
 		return $repository;
 	}
+
+	/** Fetch
+	 *
+	 * @created    2023-01-02
+	 * @param      string     $remote
+	 */
+	static function Fetch(string $remote)
+	{
+		Debug(__METHOD__, false);
+		$output = null;
+		$status = null;
+		exec("git fetch $remote 2>&1", $output, $status);
+		foreach( $output as $line ){
+			switch( $line ){
+				case '':
+				continue 2;
+			}
+			Display($line);
+		}
+	}
+
+	/** Rebase
+	 *
+	 * @created    2023-01-02
+	 * @param      string     $target
+	 */
+	static function Rebase(string $target)
+	{
+		//	...
+		$branch = Request('branch');
+
+		//	...
+		Debug(__METHOD__, false);
+		$output = null;
+		$status = null;
+		exec("git rebase $target 2>&1", $output, $status);
+		foreach( $output as $line ){
+			switch( trim($line) ){
+				case 'Current branch master is up to date.':
+				case "Current branch {$branch} is up to date.":
+					continue 2;
+				default:
+			}
+			Display($line);
+		}
+	}
+
+	/** Stash Save
+	 *
+	 * @created    2023-01-02
+	 */
+	static function Save()
+	{
+		//	...
+		$branch = Request('branch');
+
+		//	...
+		Debug(__METHOD__, false);
+		$output = null;
+		$status = null;
+		exec("git stash save 2>&1", $output, $status);
+		foreach( $output as $line ){
+			switch( trim($line) ){
+				case 'No local changes to save':
+				case strpos(' '.$line, 'Saved working directory and index state WIP on master:')    ? true: false;
+				case strpos(' '.$line, "Saved working directory and index state WIP on {$branch}:") ? true: false;
+				continue 2;
+			}
+			Display($line);
+		}
+	}
+
+	/** Stash Pop
+	 *
+	 * @created    2023-01-02
+	 */
+	static function Pop()
+	{
+		Debug(__METHOD__, false);
+		$output = null;
+		$status = null;
+		exec("git stash pop 2>&1", $output, $status);
+		foreach( $output as $line ){
+			switch( trim($line) ){
+				case 'No stash entries found.':
+				continue 2;
+			}
+		//	Display($line);
+		}
+	}
+
+	/** Push to repository.
+	 *
+	 * @created    2023-01-02
+	 * @param      string      $remote
+	 * @param      string      $branch
+	 */
+	static function Push(string $remote, string $branch)
+	{
+		//	...
+		Debug(__METHOD__."($remote, $branch)", false);
+
+		//	...
+		$commit_id_1 = null;
+		$commit_id_2 = null;
+		foreach(explode("\n",`git branch -a 2>&1`) as $line){
+			//	...
+			if( strpos($line, "remotes/{$remote}/{$branch}") ){
+				//	remote
+				if( strpos($line, $branch) ){
+					$commit_id_2 = trim(`git rev-parse {$remote}/{$branch}`);
+				}
+			}else{
+				//	branch
+				if( strpos($line, $branch) ){
+					$commit_id_1 = trim(`git rev-parse {$branch}`);
+				}
+			}
+		}
+
+		//	Check if not push.
+		if( $commit_id_1 === $commit_id_2 ){
+			//	Already pushed.
+			Debug("Already pushed.\n", false);
+			return;
+		}
+
+		//	...
+		$output = null;
+		$status = null;
+		exec("git push {$remote} {$branch} 2>&1", $output, $status);
+
+		//	...
+		foreach( $output as $line ){
+			switch( trim($line) ){
+				case '':
+					continue 2;
+			}
+			Display($line);
+		}
+	}
+
+	/**　Switch branch
+	 *
+	 * @created    2023-01-02
+	 * @param      string      $branch
+	 */
+	static function Switch($branch)
+	{
+		//	...
+		Debug(__METHOD__, false);
+
+		//	...
+		if( $branch === self::GetCurrentBranch() ){
+			//	Already on that branch.
+			return;
+		}
+
+		//	...
+		$output = null;
+		$status = null;
+		exec("git switch $branch 2>&1", $output, $status);
+		foreach( $output as $line ){
+			switch( trim($line) ){
+			//	case "Already on '{$branch}'":
+				case "Your branch is up to date with 'origin/{$branch}'.":
+					continue 2;
+				default:
+			}
+			Display(__METHOD__.' - '.$line);
+		}
+	}
+
+	/** Get current branch
+	 *
+	 * @created    2023-01-02
+	 * @return     string|boolean
+	 */
+	static function GetCurrentBranch()
+	{
+		//	...
+		$output = null;
+		$status = null;
+		exec("git branch 2>&1", $output, $status);
+		foreach( $output as $line ){
+			//	...
+			if( $line[0] === '*' ){
+				return trim(substr($line, 2));
+			}
+		}
+		//	...
+		Debug(join("\n",$output));
+		//	...
+		return false;
+	}
 }
