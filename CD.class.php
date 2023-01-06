@@ -42,6 +42,8 @@ class CD
 	 */
 	static function ChangeDir(string $path='')
 	{
+	//	Debug(__METHOD__."({$path})", false);
+
 		//	...
 		if( empty(self::$_git_root) ){
 			self::Init();
@@ -68,20 +70,27 @@ class CD
 
 		//	...
 		foreach(['', 81] as $version){
-			/*
-			//	...
+			//	Switch branches main and submodules.
 			if( $version ){
-				//	main
-				Git::Switch("php{$version}");
-
-				//	submodule
-
-				echo __FILE__;
-				return;
+				Debug(" * PHP{$version}");
+				$main = "php{$version}";
+				$sub  = "php{$version}";
+			}else{
+				$main = 'master';
+				$sub  = Request('branch');
 			}
-			*/
 
-			//	...
+			//	main
+			self::ChangeDir();
+			Git::Checkout($main);
+
+			//	submodules
+			foreach( Git::SubmoduleConfig(true) as $config ){
+				self::ChangeDir($config['path']);
+				Git::Checkout($sub);
+			}
+
+			//	CI
 			if( self::CI($version) ){
 				self::Push();
 			}
