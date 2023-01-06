@@ -483,16 +483,25 @@ class Git
 	 */
 	static function Switch($branch)
 	{
-		//	...
-		Debug(__METHOD__, false);
+		Debug(__METHOD__."($branch)", false);
 
 		//	...
-		if( $branch === self::GetCurrentBranch() ){
-			//	Already on that branch.
-			return;
+		$list = self::BranchList();
+
+		//	...
+		if(!isset($list[$branch]) ){
+			Debug("This branch does not exists. ({$branch})", false);
+			return false;
 		}
 
 		//	...
+		if( $list[$branch] ){
+			//	Already on that branch.
+			return true;
+		}
+
+		//	...
+		$fail   = null;
 		$output = null;
 		$status = null;
 		exec("git switch $branch 2>&1", $output, $status);
@@ -501,32 +510,48 @@ class Git
 			//	case "Already on '{$branch}'":
 				case "Your branch is up to date with 'origin/{$branch}'.":
 					continue 2;
+				case "Switched to branch '{$branch}'":
+					return true;
 				default:
+					$fail = true;
 			}
 			Display(__METHOD__.' - '.$line);
 		}
+
+		//	...
+		return $fail ? false: true;
 	}
 
-	/** Get current branch
-	 *
-	 * @created    2023-01-02
-	 * @return     string|boolean
-	 */
-	static function GetCurrentBranch()
+	static function Checkout($branch) : bool
 	{
-		//	...
-		$output = null;
-		$status = null;
-		exec("git branch 2>&1", $output, $status);
-		foreach( $output as $line ){
-			//	...
-			if( $line[0] === '*' ){
-				return trim(substr($line, 2));
+		Debug(__METHOD__."($branch)", false);
+
+		//	Checkout exists branch.
+		if( self::Switch($branch) ){
+			return true;
+		}
+
+		//	Checkout new branch.
+		foreach( explode("\n", trim(`git branch -a 2>&1`,"\n")) as $line ){
+			//	'  remotes/origin/master' --> 'remotes/origin/master'
+			if( $line === "  remotes/origin/{$branch}" ){
+				Debug(`git checkout origin/{$branch} -b {$branch} 2>&1`);
+				return true;
 			}
 		}
-		//	...
-		Debug(join("\n",$output));
+
 		//	...
 		return false;
+	}
+
+	static function BranchList() : array
+	{
+		$result = [];
+		foreach( explode("\n", trim(`git branch`, "\n")) as $line ){
+			$selected = $line[0] === '*' ? true: false;
+			$branch   = substr($line, 2);
+			$result[$branch] = $selected;
+		}
+		return $result;
 	}
 }
