@@ -72,7 +72,7 @@ class CD
 		foreach(['', 81] as $version){
 			//	Switch branches main and submodules.
 			if( $version ){
-				Debug(" * PHP{$version}");
+				Display(" * PHP{$version}");
 				$main = "php{$version}";
 				$sub  = "php{$version}";
 			}else{
