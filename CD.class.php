@@ -62,7 +62,8 @@ class CD
 	 *
 	 * @created    2023-01-02
 	 */
-	static function Auto(){
+	static function Auto()
+	{
 		//	...
 		self::Init();
 		self::Clone();
@@ -98,6 +99,7 @@ class CD
 
 		//	...
 		Display(" * All inspection is complete.");
+		Display(`git submodule status` ?? '');
 
 		//	...
 		return true;
