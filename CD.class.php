@@ -225,7 +225,9 @@ class CD
 
 		$output = null;
 		$status = null;
-		exec("php{$version} ci.php $args", $output, $status);
+		$command= "php{$version} ci.php $args";
+		Debug(" * {$command}");
+		exec($command, $output, $status);
 		foreach( $output as $line ){
 			echo $line;
 		}
