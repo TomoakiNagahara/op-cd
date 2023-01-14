@@ -7,10 +7,12 @@ Continuous Delivery dedicated to onepiece-framework
 php action.php config=./config.php
 ```
 
- * Can pass config file.
+ * You can pass config file to "action.php".
  * Config file is PHP file.
- * Arguments can be used to overwrite config.
+ * An arguments can be used to overwrite config file's value.
  * The order of arguments is variable.
+
+## Arguments
 
 ```
 config    : Arguments can be write in a config file.
