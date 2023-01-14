@@ -226,16 +226,18 @@ class CD
 		$output = null;
 		$status = null;
 		$command= "php{$version} ci.php $args";
-		Debug(" * {$command}");
+		Debug(" * {$command}", false);
 		exec($command, $output, $status);
 		foreach( $output as $line ){
-			echo $line;
+			echo $line."\n";
 		}
+		/* Display empty line, output even if empty.
 		echo "\n";
+		*/
 
 		//	...
 		if( $status ){
-			Display(" ! ci.php is failed.");
+			Display(" ! ci.php is failed. status={$status}");
 		}
 
 		//	...
