@@ -79,6 +79,13 @@ function DebugTrace($traces)
 		//	...
 		if( $file ){
 			$file = str_replace($_root, 'CD:', $file);
+			$file = str_pad($file, 20, ' ', STR_PAD_RIGHT);
+		}
+
+		//	...
+		if( $line ){
+			$line = (string)$line;
+			$line = str_pad($line, 3, ' ', STR_PAD_LEFT);
 		}
 
 		//	...
@@ -92,7 +99,7 @@ function DebugTrace($traces)
 		}
 
 		//	...
-		$head = $file ? "{$file} #{$line} - ": null;
+		$head = $file ? "{$file} {$line} - ": null;
 
 		//	...
 		echo "{$head}{$function}({$args})\n";
