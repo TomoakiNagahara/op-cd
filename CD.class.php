@@ -112,7 +112,7 @@ class CD
 	static function Init()
 	{
 		//	...
-		foreach(['workspace','branch','upstream','origin'] as $key ){
+		foreach(['config','workspace','branch','upstream','origin'] as $key ){
 			if(!${$key} = Request($key) ){
 				throw new Exception("This arguments is not set ({$key}). Please read README.md.");
 			}
