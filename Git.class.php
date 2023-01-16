@@ -90,6 +90,9 @@ class Git
 		$workspace = Request('workspace');
 		$origin    = Request('origin');
 		$branch    = Request('branch');
+		$directory = Request('config');
+		$directory = basename($directory);
+		$directory = substr($directory, 0, -4);
 		$git_root  = self::Root();
 		$redirect  = '2>&1';
 
@@ -100,8 +103,9 @@ class Git
 
 		//	...
 		if(!file_exists($git_root) ){
-			Display(" * `git clone {$origin} {$branch}`");
-			if( $result  = `git clone {$origin} {$redirect}` ){
+			$command = "git clone {$origin} {$directory}";
+			Display(" * $command");
+			if( $result  = `{$command} {$redirect}` ){
 				foreach( explode("\n", $result) as $line ){
 					switch( $line = trim($line) ){
 						//	Discard
