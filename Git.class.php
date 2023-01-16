@@ -28,8 +28,10 @@ class Git
 		static $_git_root;
 		if(!$_git_root ){
 			$workspace = Request('workspace');
-			$branch    = Request('branch');
-			$_git_root = rtrim($workspace,'/').'/'.$branch.'/';
+			$directory = Request('config');
+			$directory = basename($directory);
+			$directory = substr($directory , 0, -4);
+			$_git_root = rtrim($workspace,'/').'/'.$directory.'/';
 		}
 		return $_git_root;
 	}
