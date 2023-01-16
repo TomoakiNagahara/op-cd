@@ -111,16 +111,20 @@ class CD
 	 */
 	static function Init()
 	{
-		//	...
+		/* @var $config string */
 		foreach(['config','workspace','branch','upstream','origin'] as $key ){
 			if(!${$key} = Request($key) ){
 				throw new Exception("This arguments is not set ({$key}). Please read README.md.");
 			}
 		}
 
+		//	Config file name is directory name.
+		$config = basename($config);
+		$config = substr($config, 0, -4);
+
 		/* @var $workspace string */
 		/* @var $branch    string */
-		self::$_git_root  = rtrim($workspace,'/').'/'.$branch.'/';
+		self::$_git_root  = rtrim($workspace,'/').'/'.$config.'/';
 	}
 
 	/** Clone
